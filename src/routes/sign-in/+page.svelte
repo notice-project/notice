@@ -1,6 +1,4 @@
 <script lang="ts">
-  //   import GoogleLogo from "virtual:icons/logos/google-icon";
-  //   import ArrowRight from "virtual:icons/radix-icons/arrow-right";
   import GoogleLogo from "$lib/icons/google.svelte";
   import NYCULogo from "$lib/icons/nycu.svelte";
   import { ArrowRight } from "lucide-svelte";
