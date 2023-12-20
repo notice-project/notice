@@ -1,6 +1,11 @@
+import { building } from "$app/environment";
 import { redirect, type Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
+  if (building) {
+    return resolve(event);
+  }
+
   const sessionId = event.cookies.get("sessionId");
 
   if (!sessionId && event.url.pathname !== "/sign-in") {
