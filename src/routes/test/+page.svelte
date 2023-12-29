@@ -9,8 +9,6 @@
   onMount(() => {
     rootNode.appendChild("");
     rootNode = rootNode;
-
-    console.log(rootNode);
   });
 
   $: console.log("rootNode: ", rootNode.children);
@@ -19,7 +17,7 @@
 <h1>This is test page</h1>
 
 <div class="flex flex-col pl-4">
-  {#each rootNode.children as childNode}
+  {#each rootNode.children as childNode (childNode.id)}
     <BlockNode node={childNode} />
   {/each}
 </div>
