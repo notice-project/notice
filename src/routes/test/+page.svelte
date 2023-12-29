@@ -1,7 +1,6 @@
 <script lang="ts">
-  import BlockNode, {
-    BlockNodeClass,
-  } from "$lib/block/BlockNode/BlockNode.svelte";
+  import BlockNode from "$lib/block/BlockNode/BlockNode.svelte";
+  import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
   import { onMount } from "svelte";
 
   let rootNode = new BlockNodeClass("root", [], null);
