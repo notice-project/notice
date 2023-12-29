@@ -1,15 +1,32 @@
 <script lang="ts">
   import GoogleLogo from "$lib/icons/google.svelte";
+  import NoticeLogo from "$lib/icons/notice.svelte";
   import NYCULogo from "$lib/icons/nycu.svelte";
   import { ArrowRight } from "lucide-svelte";
 </script>
 
-<main class="flex h-full w-full items-center justify-center bg-purple-400">
+<main class="relative flex h-full w-full items-center justify-center">
+  <div class="absolute inset-0 -z-10 h-full w-full">
+    <enhanced:img
+      src="$lib/images/sign-in/background.svg"
+      alt="Background"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+  </div>
   <form
     method="post"
-    class="flex w-[400px] flex-col gap-8 rounded-md bg-white px-8 py-9"
+    class="flex w-[400px] flex-col gap-8 rounded-md bg-white px-8 py-9 shadow-md"
   >
-    <h1 class="text-2xl font-bold">Not!ce</h1>
+    <div class="flex items-center gap-2">
+      <NoticeLogo height={40} width={40} />
+
+      <enhanced:img
+        src="$lib/images/sign-in/heading.svg"
+        alt="Heading"
+        class="h-8"
+        draggable="false"
+      />
+    </div>
     <div>
       <h2 class="mb-1 text-xl font-bold">Sign in</h2>
       <p class="text-gray-600">to continue to Not!ce</p>
@@ -25,7 +42,7 @@
           </div>
           <spna class="w-full text-sm font-normal">Continue with Google</spna>
           <ArrowRight
-            class="h-4 w-4 flex-shrink-0 text-gray-500 transition group-hover:translate-x-2"
+            class="h-4 w-4 flex-shrink-0 text-gray-500 opacity-0 transition group-hover:translate-x-2 group-hover:opacity-100"
           />
         </button>
       </div>
@@ -40,7 +57,7 @@
             </div>
             <spna class="w-full text-sm font-normal">Continue with NYCU</spna>
             <ArrowRight
-              class="h-4 w-4 flex-shrink-0 text-gray-500 transition group-hover:translate-x-2"
+              class="h-4 w-4 flex-shrink-0 text-gray-500 opacity-0 transition group-hover:translate-x-2 group-hover:opacity-100"
             />
           </button>
         </div>
