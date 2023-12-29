@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import { Accordion as AccordionPrimitive } from "bits-ui";
   import { ChevronDown } from "lucide-svelte";
-  import { cn } from "$lib/utils";
 
   type $$Props = AccordionPrimitive.TriggerProps;
-  type $$Events = AccordionPrimitive.TriggerEvents;
+  // type $$Events = AccordionPrimitive.TriggerEvents;
 
   let className: $$Props["class"] = undefined;
   export let level: AccordionPrimitive.HeaderProps["level"] = 3;
