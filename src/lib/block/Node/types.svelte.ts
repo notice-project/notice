@@ -20,17 +20,17 @@ export abstract class NodeClass {
       e.preventDefault();
 
       const cursorPos = this.inputRef?.selectionStart ?? 0;
-      if (this.index > 0) {
-        this.parent.children[this.index - 1]?.focusAt(cursorPos);
-      }
+
+      const node = this.prevNode();
+      node?.focusAt(cursorPos);
     },
     ArrowDown: (e) => {
       e.preventDefault();
 
       const cursorPos = this.inputRef?.selectionStart ?? 0;
-      if (this.index < this.parent.children.length - 1) {
-        this.parent.children[this.index + 1]?.focusAt(cursorPos);
-      }
+
+      const nextNode = this.nextNode(true);
+      nextNode?.focusAt(cursorPos);
     },
   };
 
@@ -76,11 +76,51 @@ export abstract class NodeClass {
     this.keyActions[key] = action;
   }
 
+  isRoot() {
+    return this.parent === this;
+  }
+
+  prevNode(): NodeClass | null {
+    if (this.index > 0) {
+      return this.parent.children[this.index - 1]!.deepestChild();
+    }
+
+    if (this.parent.isRoot()) {
+      return null;
+    }
+
+    return this.parent;
+  }
+
+  nextNode(containChild: boolean): NodeClass | null {
+    if (this.children.length > 0 && containChild) {
+      return this.children[0]!;
+    }
+
+    if (this.index < this.parent.children.length - 1) {
+      return this.parent.children[this.index + 1]!;
+    }
+
+    if (this.parent.isRoot()) {
+      return null;
+    }
+
+    return this.parent.nextNode(false);
+  }
+
   private getIndex() {
     if (this.parent == null) {
       return -1;
     }
 
     return this.parent.children.findIndex((child) => child.id === this.id);
+  }
+
+  private deepestChild(): NodeClass {
+    if (this.children.length === 0) {
+      return this;
+    }
+
+    return this.children[this.children.length - 1]!.deepestChild();
   }
 }
