@@ -18,13 +18,14 @@ export class BlockNodeClass extends NodeClass {
 
   inputListener() {
     const match = this.value.match(/^#{1,3}\s/);
+
     if (match) {
       this.value = this.value.replace(/^#{1,3}\s/, "");
       this.transformType(
         new HeadingNodeClass(
           this.value,
           this.children,
-          match[0].length,
+          match[0].length - 1,
           this.parent,
         ),
       );

@@ -9,8 +9,6 @@
     rootNode.appendChild("", 0);
     rootNode = rootNode;
   });
-
-  $: console.log("rootNode: ", rootNode.children);
 </script>
 
 <h1>This is test page</h1>
