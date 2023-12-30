@@ -7,9 +7,9 @@ export class HeadingNodeClass extends NodeClass {
 
   constructor(
     value: string,
-    children: BlockNodeClass[],
+    children: NodeClass[],
     level: number,
-    parent?: BlockNodeClass,
+    parent?: NodeClass,
   ) {
     super(value, children, parent);
     this.level = level;
@@ -18,9 +18,5 @@ export class HeadingNodeClass extends NodeClass {
   appendChild(value: string, index: number): void {
     this.children.splice(index, 0, new BlockNodeClass(value, [], this));
     this.children = this.children;
-  }
-
-  inputListener() {
-    /* noop */
   }
 }

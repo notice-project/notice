@@ -3,11 +3,7 @@ import { NodeClass } from "../Node/types.svelte";
 
 /* eslint-disable no-self-assign */
 export class BlockNodeClass extends NodeClass {
-  constructor(
-    value: string,
-    children: BlockNodeClass[],
-    parent?: BlockNodeClass,
-  ) {
+  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
     super(value, children, parent);
   }
 

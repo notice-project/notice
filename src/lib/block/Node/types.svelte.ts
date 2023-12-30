@@ -15,7 +15,6 @@ export abstract class NodeClass {
     }
   }
 
-  abstract inputListener(): void;
   abstract appendChild(value: string, index: number): void;
 
   removeChild(childId: string) {
