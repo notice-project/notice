@@ -3,23 +3,26 @@ export class BlockNodeClass {
   value = $state("");
   children = $state<BlockNodeClass[]>([]);
   inputRef = $state<HTMLInputElement | null>(null);
-  parent = $state<BlockNodeClass | null>(null);
+  parent = $state<BlockNodeClass>(this);
   index = $derived(this.getIndex());
   id = crypto.randomUUID();
 
   constructor(
     value: string,
     children: BlockNodeClass[],
-    parent: BlockNodeClass | null,
+    parent?: BlockNodeClass,
   ) {
     this.value = value;
     this.children = children;
-    this.parent = parent;
+    if (parent) {
+      this.parent = parent;
+    }
   }
 
-  appendChild(value: string) {
-    this.children.push(new BlockNodeClass(value, [], this));
+  appendChild(value: string, index: number) {
+    this.children.splice(index, 0, new BlockNodeClass(value, [], this));
     this.children = this.children;
+    console.log(this.children);
   }
 
   removeChild(childId: string) {
@@ -32,13 +35,17 @@ export class BlockNodeClass {
     }
   }
 
+  // transformType(node: BlockNodeClass) {
+  //   if (this.parent == null) {
+  //     return;
+  //   }
+  //   this.parent?.children[this.index] = node;
+  // }
+
   keydownHandler(e: KeyboardEvent) {
-    if (this.parent == null) {
-      return;
-    }
     switch (e.key) {
       case "Enter":
-        this.parent.appendChild("");
+        this.parent.appendChild("", this.index + 1);
         break;
       case "Backspace":
         if (this.value === "" && this.index !== 0) {

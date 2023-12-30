@@ -3,10 +3,10 @@
   import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
   import { onMount } from "svelte";
 
-  let rootNode = new BlockNodeClass("root", [], null);
+  let rootNode = new BlockNodeClass("root", []);
 
   onMount(() => {
-    rootNode.appendChild("");
+    rootNode.appendChild("", 0);
     rootNode = rootNode;
   });
 
