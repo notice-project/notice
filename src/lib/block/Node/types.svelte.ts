@@ -8,6 +8,7 @@ export abstract class NodeClass {
   inputRef = $state<HTMLInputElement | null>(null);
   parent = $state<NodeClass>(this);
   index = $derived(this.getIndex());
+  focusOnMount = $state(true);
 
   id = crypto.randomUUID();
   keyActions: KeyAction = {

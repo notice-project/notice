@@ -9,8 +9,9 @@
   let { node } = $props<HeadingNodeProps>();
 
   $effect(() => {
-    if (node.inputRef) {
+    if (node.inputRef && node.focusOnMount) {
       node.inputRef.focus();
+      node.focusOnMount = false;
     }
   });
 

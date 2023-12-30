@@ -56,6 +56,7 @@ export class ListItemNodeClass extends NodeClass {
 
       this.parent.removeChild(this.id);
       this.parent = prevNode;
+      this.focusOnMount = true;
       prevNode.appendChild(this, prevNode.children.length);
 
       for (const child of this.children) {
