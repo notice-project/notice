@@ -36,7 +36,7 @@
     {/each}
 
     <button
-      on:click={addBook}
+      onclick={addBook}
       class="mt-7 flex items-center justify-center whitespace-nowrap border-[3px] border-dashed border-zinc-300 px-16 py-5 text-xl text-zinc-300 max-md:max-w-full max-md:px-5"
     >
       +
