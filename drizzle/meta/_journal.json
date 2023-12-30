@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1703864439110,
+      "tag": "0000_sleepy_mulholland_black",
+      "breakpoints": true
+    }
+  ]
+}
