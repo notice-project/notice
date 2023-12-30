@@ -28,11 +28,19 @@ export abstract class NodeClass {
     }
   }
 
+  focusAt(cursorPos: number) {
+    const pos = Math.min(cursorPos, this.value.length);
+    this.inputRef?.focus();
+    this.inputRef?.setSelectionRange(pos, pos);
+  }
+
   transformType(node: NodeClass) {
     this.parent.children[this.index] = node;
   }
 
   keydownHandler(e: KeyboardEvent) {
+    const cursorPos = this.inputRef?.selectionStart ?? 0;
+
     switch (e.key) {
       case "Enter":
         this.parent.appendChild("", this.index + 1);
@@ -43,13 +51,15 @@ export abstract class NodeClass {
         }
         break;
       case "ArrowUp":
+        e.preventDefault();
         if (this.index > 0) {
-          this.parent.children[this.index - 1]?.inputRef?.focus();
+          this.parent.children[this.index - 1]?.focusAt(cursorPos);
         }
         break;
       case "ArrowDown":
+        e.preventDefault();
         if (this.index < this.parent.children.length - 1) {
-          this.parent.children[this.index + 1]?.inputRef?.focus();
+          this.parent.children[this.index + 1]?.focusAt(cursorPos);
         }
         break;
     }
