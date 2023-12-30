@@ -1,11 +1,13 @@
+import { building } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import NYCU from "$lib/auth/providers/nycu";
 import Google from "@auth/core/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { SvelteKitAuth } from "@auth/sveltekit";
+import type { Handle } from "@sveltejs/kit";
 import { db } from "./server/db";
 
-export const handle = SvelteKitAuth(async () => {
+const handleAuth = SvelteKitAuth(async () => {
   return {
     adapter: DrizzleAdapter(db),
     providers: [
@@ -20,3 +22,12 @@ export const handle = SvelteKitAuth(async () => {
     ],
   };
 });
+
+export const handle: Handle = async ({ event, resolve }) => {
+  if (building) {
+    const response = await resolve(event);
+    return response;
+  }
+
+  return handleAuth({ event, resolve });
+};
