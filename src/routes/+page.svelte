@@ -15,6 +15,7 @@
     <input type="text" bind:value={name} class="border" />
   </div>
 
+  <!-- eslint-disable-next-line svelte/valid-compile -->
   {#if $page.data.session?.user}
     <pre>{JSON.stringify($page.data.session.user, null, 2)}</pre>
     <button onclick={() => signOut()}>Logout</button>
