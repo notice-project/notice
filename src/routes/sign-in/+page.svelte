@@ -2,6 +2,7 @@
   import GoogleLogo from "$lib/icons/google.svelte";
   import NoticeLogo from "$lib/icons/notice.svelte";
   import NYCULogo from "$lib/icons/nycu.svelte";
+  import { signIn } from "@auth/sveltekit/client";
   import { ArrowRight } from "lucide-svelte";
 </script>
 
@@ -13,8 +14,7 @@
       class="absolute inset-0 h-full w-full object-cover"
     />
   </div>
-  <form
-    method="post"
+  <section
     class="flex w-[400px] flex-col gap-8 rounded-md bg-white px-8 py-9 shadow-md"
   >
     <div class="flex items-center gap-2">
@@ -34,13 +34,13 @@
     <div class="flex flex-col gap-2">
       <div class="w-full">
         <button
-          formaction="?/google"
           class="group inline-flex w-full items-center gap-4 rounded-md border px-6 py-3 text-left hover:bg-gray-100"
+          onclick={() => signIn("google")}
         >
           <div class="flex-shrink-0">
             <GoogleLogo height={20} width={20} />
           </div>
-          <spna class="w-full text-sm font-normal">Continue with Google</spna>
+          <span class="w-full text-sm font-normal">Continue with Google</span>
           <ArrowRight
             class="h-4 w-4 flex-shrink-0 text-gray-500 opacity-0 transition group-hover:translate-x-2 group-hover:opacity-100"
           />
@@ -49,13 +49,13 @@
       <div>
         <div class="w-full">
           <button
-            formaction="?/nycu"
+            onclick={() => signIn("nycu")}
             class="group inline-flex w-full items-center gap-4 rounded-md border px-6 py-3 text-left hover:bg-gray-100"
           >
             <div class="flex-shrink-0">
               <NYCULogo height={20} width={20} />
             </div>
-            <spna class="w-full text-sm font-normal">Continue with NYCU</spna>
+            <span class="w-full text-sm font-normal">Continue with NYCU</span>
             <ArrowRight
               class="h-4 w-4 flex-shrink-0 text-gray-500 opacity-0 transition group-hover:translate-x-2 group-hover:opacity-100"
             />
@@ -63,5 +63,5 @@
         </div>
       </div>
     </div>
-  </form>
+  </section>
 </main>

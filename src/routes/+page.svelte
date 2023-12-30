@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { page } from "$app/stores";
+  import { signOut } from "@auth/sveltekit/client";
+
   let name = $state("Not!ce");
 </script>
 
@@ -11,4 +14,15 @@
     <label for="name">Project Name:</label>
     <input type="text" bind:value={name} class="border" />
   </div>
+
+  {#if $page.data.session?.user}
+    <pre>{JSON.stringify($page.data.session.user, null, 2)}</pre>
+    <button onclick={() => signOut()}>Logout</button>
+
+    <form method="post">
+      <button formaction="?/testCookies">Test Cookies</button>
+    </form>
+  {:else}
+    <a href="/sign-in">Sign In</a>
+  {/if}
 </div>
