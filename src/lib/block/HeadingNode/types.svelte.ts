@@ -22,6 +22,7 @@ export class HeadingNodeClass extends NodeClass {
   }
 
   appendChild(node: NodeClass, index: number): void {
+    node.parent = this;
     this.children.splice(index, 0, node);
     this.children = this.children;
   }

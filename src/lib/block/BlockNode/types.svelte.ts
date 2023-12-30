@@ -14,7 +14,8 @@ export class BlockNodeClass extends NodeClass {
     });
   }
 
-  appendChild(node: NodeClass, index: number): void {
+  appendChild(node: NodeClass, index: number) {
+    node.parent = this;
     this.children.splice(index, 0, node);
     this.children = this.children;
   }
