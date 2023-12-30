@@ -34,17 +34,27 @@ export class ListItemNodeClass extends NodeClass {
           return;
         }
 
-        for (let i = this.index + 1; i < this.parent.children.length; i++) {
+        const parentChildrenLen = this.parent.children.length;
+        for (let i = this.index + 1; i < parentChildrenLen; i++) {
           const child = this.parent.children[i];
           if (child === undefined) {
             return;
           }
 
           this.appendChild(child, this.children.length);
+        }
+
+        for (let i = parentChildrenLen - 1; i > this.index; i--) {
+          const child = this.parent.children[i];
+          if (child === undefined) {
+            return;
+          }
+
           this.parent.removeChild(child.id);
         }
 
         this.parent.removeChild(this.id);
+        this.focusOnMount = true;
         this.parent.parent.appendChild(this, this.parent.index + 1);
         return;
       }
