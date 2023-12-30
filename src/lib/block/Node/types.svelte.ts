@@ -15,18 +15,8 @@ export abstract class NodeClass {
     }
   }
 
-  abstract createNode(
-    value: string,
-    children: NodeClass[],
-    parent?: NodeClass,
-  ): NodeClass;
-
   abstract inputListener(): void;
-
-  appendChild(value: string, index: number) {
-    this.children.splice(index, 0, this.createNode(value, [], this));
-    this.children = this.children;
-  }
+  abstract appendChild(value: string, index: number): void;
 
   removeChild(childId: string) {
     const index = this.children.findIndex((child) => child.id === childId);

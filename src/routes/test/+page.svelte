@@ -1,6 +1,6 @@
 <script lang="ts">
-  import BlockNode from "$lib/block/BlockNode/BlockNode.svelte";
   import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
+  import Node from "$lib/block/Node/Node.svelte";
   import { onMount } from "svelte";
 
   let rootNode = new BlockNodeClass("root", []);
@@ -17,6 +17,6 @@
 
 <div class="flex flex-col pl-4">
   {#each rootNode.children as childNode (childNode.id)}
-    <BlockNode node={childNode} />
+    <Node node={childNode} />
   {/each}
 </div>

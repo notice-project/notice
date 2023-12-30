@@ -1,6 +1,7 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
 
+/* eslint-disable no-self-assign */
 export class HeadingNodeClass extends NodeClass {
   level: number;
 
@@ -14,12 +15,9 @@ export class HeadingNodeClass extends NodeClass {
     this.level = level;
   }
 
-  createNode(
-    value: string,
-    children: NodeClass[],
-    parent?: NodeClass,
-  ): NodeClass {
-    return new HeadingNodeClass(value, children, this.level, parent);
+  appendChild(value: string, index: number): void {
+    this.children.splice(index, 0, new BlockNodeClass(value, [], this));
+    this.children = this.children;
   }
 
   inputListener() {
