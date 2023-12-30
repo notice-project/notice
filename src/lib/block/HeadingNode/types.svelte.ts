@@ -13,10 +13,16 @@ export class HeadingNodeClass extends NodeClass {
   ) {
     super(value, children, parent);
     this.level = level;
+    this.registerAction("Enter", () => {
+      this.parent.appendChild(
+        new BlockNodeClass("", [], this.parent),
+        this.index + 1,
+      );
+    });
   }
 
-  appendChild(value: string, index: number): void {
-    this.children.splice(index, 0, new BlockNodeClass(value, [], this));
+  appendChild(node: NodeClass, index: number): void {
+    this.children.splice(index, 0, node);
     this.children = this.children;
   }
 }

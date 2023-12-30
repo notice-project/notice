@@ -6,7 +6,7 @@
   let rootNode = new BlockNodeClass("root", []);
 
   onMount(() => {
-    rootNode.appendChild("", 0);
+    rootNode.appendChild(new BlockNodeClass("", [], rootNode), 0);
     rootNode = rootNode;
   });
 </script>
