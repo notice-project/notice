@@ -9,6 +9,8 @@ import { db } from "./server/db";
 
 const handleAuth = SvelteKitAuth(async () => {
   return {
+    trustHost: true,
+    secret: env.AUTH_SECRET ?? "secret",
     adapter: DrizzleAdapter(db),
     providers: [
       Google({
