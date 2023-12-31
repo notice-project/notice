@@ -53,8 +53,8 @@ export class ListItemNodeClass extends NodeClass {
           this.parent.removeChild(child.id);
         }
 
-        this.parent.removeChild(this.id);
         this.focusOnMount = true;
+        this.parent.removeChild(this.id);
         this.parent.parent.appendChild(this, this.parent.index + 1);
         return;
       }

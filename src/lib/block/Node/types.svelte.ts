@@ -62,6 +62,10 @@ export abstract class NodeClass {
   }
 
   transformType(node: NodeClass) {
+    for (const child of this.children) {
+      child.parent = node;
+    }
+
     this.parent.children[this.index] = node;
   }
 
@@ -110,10 +114,6 @@ export abstract class NodeClass {
   }
 
   private getIndex() {
-    if (this.parent == null) {
-      return -1;
-    }
-
     return this.parent.children.findIndex((child) => child.id === this.id);
   }
 
