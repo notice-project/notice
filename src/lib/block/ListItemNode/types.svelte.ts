@@ -1,43 +1,65 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
 
+type ListItemNodeClassConstructor = {
+  value: string;
+  children: NodeClass[];
+  rootChildId: string;
+  root: NodeClass;
+  parent: NodeClass;
+};
+
 /* eslint-disable no-self-assign */
 export class ListItemNodeClass extends NodeClass {
-  constructor(
-    value: string,
-    children: NodeClass[],
-    rootChildId: string,
-    root: NodeClass,
-    parent: NodeClass,
-  ) {
-    super(value, children, rootChildId, root, parent);
+  constructor({
+    value,
+    children,
+    rootChildId,
+    root,
+    parent,
+  }: ListItemNodeClassConstructor) {
+    super({ value, children, rootChildId, root, parent });
     this.registerAction("Backspace", () => {
       if (this.value === "") {
         this.transformType(
-          new BlockNodeClass("", this.children, rootChildId, root, this.parent),
+          new BlockNodeClass({
+            value: "",
+            children: this.children,
+            rootChildId: this.rootChildId,
+            root: this.root,
+            parent: this.parent,
+          }),
         );
       }
     });
     this.registerAction("Enter", () => {
       if (this.children.length === 0) {
         this.parent.appendChild(
-          new ListItemNodeClass("", [], rootChildId, root, this.parent),
+          new ListItemNodeClass({
+            value: "",
+            children: [],
+            rootChildId: this.rootChildId,
+            root: this.root,
+            parent: this.parent,
+          }),
           this.index + 1,
         );
         return;
       }
 
-      const nextNode = new ListItemNodeClass(
-        "",
-        [],
-        rootChildId,
-        root,
-        this.parent,
-      );
+      const nextNode = new ListItemNodeClass({
+        value: "",
+        children: [],
+        rootChildId: this.rootChildId,
+        root: this.root,
+        parent: this.parent,
+      });
       this.parent.appendChild(nextNode, this.index + 1);
+
       for (const child of this.children) {
         nextNode.appendChild(child, nextNode.children.length);
       }
+
       this.children = [];
     });
     this.registerAction("Tab", (e) => {

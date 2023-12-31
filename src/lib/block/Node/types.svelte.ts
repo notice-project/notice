@@ -2,11 +2,20 @@
 
 type KeyAction = Record<string, (e: KeyboardEvent) => void>;
 
+type NodeClassConstructor = {
+  value: string;
+  children: NodeClass[];
+  rootChildId: string;
+  root?: NodeClass;
+  parent?: NodeClass;
+};
+
 export abstract class NodeClass {
+  id = crypto.randomUUID();
   value = $state("");
   children = $state<NodeClass[]>([]);
-
   inputRef = $state<HTMLInputElement | null>(null);
+  focusOnMount = $state(true);
 
   parent = $state<NodeClass>(this);
   root = $state<NodeClass>(this);
@@ -14,9 +23,6 @@ export abstract class NodeClass {
   index = $derived(this.getIndex());
   rootChildId = $state("");
 
-  focusOnMount = $state(true);
-
-  id = crypto.randomUUID();
   keyActions: KeyAction = {
     Backspace: () => {
       if (this.value === "" && this.index !== 0) {
@@ -41,13 +47,13 @@ export abstract class NodeClass {
     },
   };
 
-  constructor(
-    value: string,
-    children: NodeClass[],
-    rootChildId: string,
-    root?: NodeClass,
-    parent?: NodeClass,
-  ) {
+  constructor({
+    value,
+    children,
+    rootChildId,
+    root,
+    parent,
+  }: NodeClassConstructor) {
     this.value = value;
     this.children = children;
     if (this.parent.isRoot()) {

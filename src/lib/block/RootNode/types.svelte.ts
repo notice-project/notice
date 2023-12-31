@@ -1,13 +1,24 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
 
+type RootNodeClassConstructor = {
+  value: string;
+  children: NodeClass[];
+};
+
 /* eslint-disable no-self-assign */
 export class RootNodeClass extends NodeClass {
-  constructor(value: string, children: NodeClass[]) {
-    super(value, children, "");
+  constructor({ value, children }: RootNodeClassConstructor) {
+    super({ value, children, rootChildId: "" });
     this.registerAction("Enter", () => {
       this.appendChild(
-        new BlockNodeClass("", [], "", this, this),
+        new BlockNodeClass({
+          value: "",
+          children: [],
+          rootChildId: "",
+          root: this,
+          parent: this,
+        }),
         this.children.length,
       );
     });
