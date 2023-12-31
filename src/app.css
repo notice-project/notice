@@ -75,4 +75,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html,
+  body,
+  #__root {
+    @apply h-full w-full;
+  }
 }
