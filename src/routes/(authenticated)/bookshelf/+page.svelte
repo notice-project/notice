@@ -4,7 +4,7 @@
   import { AuthCookies } from "$lib/auth/cookies";
   import * as Button from "$lib/components/ui/button";
   import * as Select from "$lib/components/ui/select";
-  import { createInfiniteQuery, createMutation } from "@tanstack/svelte-query";
+  import { createInfiniteQuery } from "@tanstack/svelte-query";
   import { ArrowDown, ArrowUp } from "lucide-svelte";
   import type { PageData } from "./$types";
   import Bookshelf from "./bookshelf.svelte";
@@ -46,8 +46,6 @@
       initialPageParam: null as string | null,
     }),
   );
-
-  const addBookshelf = createMutation;
 
   let selectedBook = $state<string | null>(null);
 

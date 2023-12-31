@@ -21,6 +21,7 @@
   </div>
 
   <div class="flex justify-center gap-4">
+    <!-- eslint-disable-next-line svelte/valid-compile -->
     {#if $page.data.session?.user}
       <Button.Root href="/bookshelf">My Notes</Button.Root>
     {:else}
