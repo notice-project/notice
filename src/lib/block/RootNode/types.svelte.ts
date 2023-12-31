@@ -1,5 +1,6 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
+import { RootNodePayloadClass } from "./payload.svelte";
 
 type RootNodeClassConstructor = {
   value: string;
@@ -28,14 +29,7 @@ export class RootNodeClass extends NodeClass {
 
     $effect(() => {
       const intervalId = setInterval(() => {
-        console.log("children: ", this.children);
-        if (this.updateTitle) {
-          console.log(this.value);
-          this.updateTitle = false;
-        }
-
-        this.dump();
-        this.needUpdateIds.clear();
+        this.upload();
       }, 10000);
 
       return () => {
@@ -49,15 +43,30 @@ export class RootNodeClass extends NodeClass {
   }
 
   dump() {
+    const payload = new RootNodePayloadClass();
+
     for (const childId of this.needUpdateIds) {
       const node = this.children.find((child) => child.id === childId);
       if (!node) {
         continue;
       }
 
-      console.log("id: ", node.id, "index", node.index);
-      node.dump();
+      payload.appendChild(node.dump());
     }
+
+    return payload;
+  }
+
+  upload() {
+    if (this.updateTitle) {
+      console.log(this.value);
+      this.updateTitle = false;
+    }
+
+    const payload = this.dump();
+    console.log(payload.json());
+
+    this.needUpdateIds.clear();
   }
 
   appendNeedUpdateId(id: string) {
