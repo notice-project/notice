@@ -11,13 +11,15 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "db:generate": "drizzle-kit generate:mysql",
-    "db:push": "drizzle-kit push:mysql"
+    "db:push": "drizzle-kit push:mysql",
+    "api:generate": "openapi-typescript openapi.yaml -o ./src/lib/api/schema.ts --export-type"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/enhanced-img": "^0.1.6",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@tanstack/svelte-query-devtools": "^5.17.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "^10.4.16",
@@ -25,6 +27,7 @@
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-svelte": "2.36.0-next.3",
+    "openapi-typescript": "^6.7.3",
     "postcss": "^8.4.32",
     "prettier": "^3.0.0",
     "prettier-plugin-svelte": "^3.0.0",
@@ -41,11 +44,13 @@
     "@auth/core": "^0.19.0",
     "@auth/drizzle-adapter": "^0.3.12",
     "@auth/sveltekit": "^0.5.0",
-    "drizzle-orm": "^0.29.2",
+    "@tanstack/svelte-query": "^5.17.0",
     "bits-ui": "^0.11.8",
     "clsx": "^2.0.0",
+    "drizzle-orm": "^0.29.2",
     "lucide-svelte": "^0.298.0",
     "mysql2": "^3.6.5",
+    "openapi-fetch": "^0.8.2",
     "tailwind-merge": "^2.2.0",
     "tailwind-variants": "^0.1.19"
   }
