@@ -12,7 +12,7 @@ type NodeClassConstructor = {
 
 export abstract class NodeClass {
   id = crypto.randomUUID();
-  value = $state("");
+  _value = $state("");
   children = $state<NodeClass[]>([]);
   inputRef = $state<HTMLInputElement | null>(null);
   focusOnMount = $state(true);
@@ -54,7 +54,7 @@ export abstract class NodeClass {
     root,
     parent,
   }: NodeClassConstructor) {
-    this.value = value;
+    this._value = value;
     this.children = children;
     if (this.parent.isRoot()) {
       this.rootChildId = this.id;
@@ -74,9 +74,18 @@ export abstract class NodeClass {
   abstract appendChild(node: NodeClass, index: number): void;
   abstract notifyUpdate(): void;
   abstract dump(): void;
-  // abstract visitChildren(visitor: (node: NodeClass) => void): void;
+
+  set value(value: string) {
+    this._value = value;
+    this.notifyUpdate();
+  }
+
+  get value() {
+    return this._value;
+  }
 
   removeChild(childId: string) {
+    this.notifyUpdate();
     const index = this.children.findIndex((child) => child.id === childId);
 
     if (index !== -1) {
@@ -98,10 +107,11 @@ export abstract class NodeClass {
     }
 
     this.parent.children[this.index] = node;
+    node.notifyUpdate();
   }
 
   keydownHandler(e: KeyboardEvent) {
-    this.notifyUpdate();
+    // this.notifyUpdate();
     const action = this.keyActions[e.key];
 
     if (action) {
@@ -143,6 +153,15 @@ export abstract class NodeClass {
     }
 
     return this.parent.nextNode(false);
+  }
+
+  updateRootChildId(id: string) {
+    this.rootChildId = id;
+    for (const child of this.children) {
+      child.updateRootChildId(id);
+    }
+
+    this.notifyUpdate();
   }
 
   private getIndex() {

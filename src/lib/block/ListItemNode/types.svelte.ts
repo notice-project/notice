@@ -134,5 +134,8 @@ export class ListItemNodeClass extends NodeClass {
     node.parent = this;
     this.children.splice(index, 0, node);
     this.children = this.children;
+
+    node.updateRootChildId(this.rootChildId);
+    this.notifyUpdate();
   }
 }

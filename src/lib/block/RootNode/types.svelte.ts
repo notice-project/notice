@@ -9,6 +9,7 @@ type RootNodeClassConstructor = {
 /* eslint-disable no-self-assign */
 export class RootNodeClass extends NodeClass {
   needUpdateIds = $state<Set<string>>(new Set());
+  updateTitle = $state(false);
 
   constructor({ value, children }: RootNodeClassConstructor) {
     super({ value, children, rootChildId: "" });
@@ -28,6 +29,11 @@ export class RootNodeClass extends NodeClass {
     $effect(() => {
       const intervalId = setInterval(() => {
         console.log("children: ", this.children);
+        if (this.updateTitle) {
+          console.log(this.value);
+          this.updateTitle = false;
+        }
+
         this.dump();
         this.needUpdateIds.clear();
       }, 10000);
@@ -39,7 +45,7 @@ export class RootNodeClass extends NodeClass {
   }
 
   notifyUpdate() {
-    // do nothing
+    this.updateTitle = true;
   }
 
   dump() {
@@ -54,17 +60,6 @@ export class RootNodeClass extends NodeClass {
     }
   }
 
-  // visitChildren(visitor: (node: NodeClass) => void): void {
-  //   for (const childId of this.needUpdateIds) {
-  //     const child = this.children.find((child) => child.id === childId);
-  //     if (!child) {
-  //       continue;
-  //     }
-
-  //     visitor(child);
-  //   }
-  // }
-
   appendNeedUpdateId(id: string) {
     this.needUpdateIds.add(id);
     this.needUpdateIds = this.needUpdateIds;
@@ -74,5 +69,7 @@ export class RootNodeClass extends NodeClass {
     node.parent = this;
     this.children.splice(index, 0, node);
     this.children = this.children;
+
+    node.updateRootChildId(node.id);
   }
 }
