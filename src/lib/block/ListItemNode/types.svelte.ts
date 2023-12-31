@@ -122,6 +122,14 @@ export class ListItemNodeClass extends NodeClass {
     this.root.appendNeedUpdateId(this.rootChildId);
   }
 
+  dump(): void {
+    console.log("ListItemNode", this.value);
+
+    for (const child of this.children) {
+      child.dump();
+    }
+  }
+
   appendChild(node: NodeClass, index: number) {
     node.parent = this;
     this.children.splice(index, 0, node);

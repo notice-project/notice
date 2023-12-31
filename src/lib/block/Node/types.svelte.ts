@@ -73,6 +73,8 @@ export abstract class NodeClass {
 
   abstract appendChild(node: NodeClass, index: number): void;
   abstract notifyUpdate(): void;
+  abstract dump(): void;
+  // abstract visitChildren(visitor: (node: NodeClass) => void): void;
 
   removeChild(childId: string) {
     const index = this.children.findIndex((child) => child.id === childId);

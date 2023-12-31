@@ -47,6 +47,14 @@ export class HeadingNodeClass extends NodeClass {
     this.root.appendNeedUpdateId(this.rootChildId);
   }
 
+  dump(): void {
+    console.log("HeadingNode", this.value);
+
+    for (const child of this.children) {
+      child.dump();
+    }
+  }
+
   appendChild(node: NodeClass, index: number): void {
     node.parent = this;
     this.children.splice(index, 0, node);
