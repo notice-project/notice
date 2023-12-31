@@ -1,5 +1,6 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
+import { RootNodeClass } from "../RootNode/types.svelte";
 
 type HeadingNodeClassConstructor = {
   value: string;
@@ -38,7 +39,13 @@ export class HeadingNodeClass extends NodeClass {
     });
   }
 
-  notifyUpdate() {}
+  notifyUpdate() {
+    if (!(this.root instanceof RootNodeClass)) {
+      return;
+    }
+
+    this.root.appendNeedUpdateId(this.rootChildId);
+  }
 
   appendChild(node: NodeClass, index: number): void {
     node.parent = this;
