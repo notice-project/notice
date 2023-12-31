@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { cn } from "$lib/utils";
 	import { Select as SelectPrimitive } from "bits-ui";
 	import { ChevronDown } from "lucide-svelte";
-	import { cn } from "$lib/utils";
 
-	type $$Props = SelectPrimitive.TriggerProps;
+	type $$Props/* @ts-ignore */ = SelectPrimitive.TriggerProps;
 	type $$Events = SelectPrimitive.TriggerEvents;
 
 	let className: $$Props["class"] = undefined;
