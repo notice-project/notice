@@ -1,20 +1,12 @@
 <script lang="ts">
-  import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
-  import Node from "$lib/block/Node/Node.svelte";
-  import { onMount } from "svelte";
+  import RootNode from "$lib/block/RootNode/RootNode.svelte";
+  import { RootNodeClass } from "$lib/block/RootNode/types.svelte";
 
-  let rootNode = new BlockNodeClass("root", []);
-
-  onMount(() => {
-    rootNode.appendChild(new BlockNodeClass("", [], rootNode), 0);
-    rootNode = rootNode;
-  });
+  let rootNode = new RootNodeClass("", []);
 </script>
 
 <h1>This is test page</h1>
 
 <div class="flex flex-col pl-4">
-  {#each rootNode.children as childNode (childNode.id)}
-    <Node node={childNode} />
-  {/each}
+  <RootNode node={rootNode} />
 </div>
