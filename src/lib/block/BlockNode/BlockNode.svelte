@@ -12,6 +12,10 @@
       node.inputRef.focus();
     }
   });
+
+  $effect(() => {
+    node.inputListener();
+  });
 </script>
 
 <input

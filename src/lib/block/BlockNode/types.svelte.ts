@@ -1,68 +1,30 @@
-/* eslint-disable no-self-assign */
-export class BlockNodeClass {
-  value = $state("");
-  children = $state<BlockNodeClass[]>([]);
-  inputRef = $state<HTMLInputElement | null>(null);
-  parent = $state<BlockNodeClass | null>(null);
-  index = $derived(this.getIndex());
-  id = crypto.randomUUID();
+import { HeadingNodeClass } from "../HeadingNode/types.svelte";
+import { NodeClass } from "../Node/types.svelte";
 
-  constructor(
-    value: string,
-    children: BlockNodeClass[],
-    parent: BlockNodeClass | null,
-  ) {
-    this.value = value;
-    this.children = children;
-    this.parent = parent;
+/* eslint-disable no-self-assign */
+export class BlockNodeClass extends NodeClass {
+  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
+    super(value, children, parent);
   }
 
-  appendChild(value: string) {
-    this.children.push(new BlockNodeClass(value, [], this));
+  appendChild(value: string, index: number): void {
+    this.children.splice(index, 0, new BlockNodeClass(value, [], this));
     this.children = this.children;
   }
 
-  removeChild(childId: string) {
-    const index = this.children.findIndex((child) => child.id === childId);
+  inputListener() {
+    const match = this.value.match(/^#{1,3}\s/);
 
-    if (index !== -1) {
-      this.children[Math.max(0, index - 1)]?.inputRef?.focus();
-      this.children.splice(index, 1);
-      this.children = this.children;
+    if (match) {
+      this.value = this.value.replace(/^#{1,3}\s/, "");
+      this.transformType(
+        new HeadingNodeClass(
+          this.value,
+          this.children,
+          match[0].length - 1,
+          this.parent,
+        ),
+      );
     }
-  }
-
-  keydownHandler(e: KeyboardEvent) {
-    if (this.parent == null) {
-      return;
-    }
-    switch (e.key) {
-      case "Enter":
-        this.parent.appendChild("");
-        break;
-      case "Backspace":
-        if (this.value === "" && this.index !== 0) {
-          this.parent.removeChild(this.id);
-        }
-        break;
-      case "ArrowUp":
-        if (this.index > 0) {
-          this.parent.children[this.index - 1]?.inputRef?.focus();
-        }
-        break;
-      case "ArrowDown":
-        if (this.index < this.parent.children.length - 1) {
-          this.parent.children[this.index + 1]?.inputRef?.focus();
-        }
-        break;
-    }
-  }
-
-  private getIndex() {
-    if (this.parent == null) {
-      return -1;
-    }
-
-    return this.parent.children.findIndex((child) => child.id === this.id);
   }
 }
