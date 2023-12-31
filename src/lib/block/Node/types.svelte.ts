@@ -86,12 +86,12 @@ export abstract class NodeClass {
   }
 
   prevNode(): NodeClass | null {
-    if (this.index > 0) {
-      return this.parent.children[this.index - 1]!.deepestChild();
+    if (this.isRoot()) {
+      return null;
     }
 
-    if (this.parent.isRoot()) {
-      return null;
+    if (this.index > 0) {
+      return this.parent.children[this.index - 1]!.deepestChild();
     }
 
     return this.parent;

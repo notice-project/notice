@@ -11,7 +11,7 @@
 
 <input
   type="text"
-  class="text-6xl"
+  class="border text-6xl"
   bind:this={node.inputRef}
   bind:value={node.value}
   onkeydown={(e) => node.keydownHandler(e)}
