@@ -5,9 +5,15 @@ type KeyAction = Record<string, (e: KeyboardEvent) => void>;
 export abstract class NodeClass {
   value = $state("");
   children = $state<NodeClass[]>([]);
+
   inputRef = $state<HTMLInputElement | null>(null);
+
   parent = $state<NodeClass>(this);
+  root = $state<NodeClass>(this);
+
   index = $derived(this.getIndex());
+  rootChildId = $state("");
+
   focusOnMount = $state(true);
 
   id = crypto.randomUUID();
@@ -35,15 +41,32 @@ export abstract class NodeClass {
     },
   };
 
-  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
+  constructor(
+    value: string,
+    children: NodeClass[],
+    rootChildId: string,
+    root?: NodeClass,
+    parent?: NodeClass,
+  ) {
     this.value = value;
     this.children = children;
+    if (this.parent.isRoot()) {
+      this.rootChildId = this.id;
+    } else {
+      this.rootChildId = rootChildId;
+    }
+
+    if (root) {
+      this.root = root;
+    }
+
     if (parent) {
       this.parent = parent;
     }
   }
 
   abstract appendChild(node: NodeClass, index: number): void;
+  abstract notifyUpdate(): void;
 
   removeChild(childId: string) {
     const index = this.children.findIndex((child) => child.id === childId);
@@ -70,6 +93,7 @@ export abstract class NodeClass {
   }
 
   keydownHandler(e: KeyboardEvent) {
+    this.notifyUpdate();
     const action = this.keyActions[e.key];
 
     if (action) {

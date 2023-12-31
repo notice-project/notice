@@ -4,15 +4,23 @@ import { NodeClass } from "../Node/types.svelte";
 
 /* eslint-disable no-self-assign */
 export class BlockNodeClass extends NodeClass {
-  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
-    super(value, children, parent);
+  constructor(
+    value: string,
+    children: NodeClass[],
+    rootChildId: string,
+    root: NodeClass,
+    parent: NodeClass,
+  ) {
+    super(value, children, rootChildId, root, parent);
     this.registerAction("Enter", () => {
       this.parent.appendChild(
-        new BlockNodeClass("", [], this.parent),
+        new BlockNodeClass("", [], rootChildId, this.root, this.parent),
         this.index + 1,
       );
     });
   }
+
+  notifyUpdate() {}
 
   appendChild(node: NodeClass, index: number) {
     node.parent = this;
@@ -29,6 +37,8 @@ export class BlockNodeClass extends NodeClass {
         new HeadingNodeClass(
           this.value,
           this.children,
+          this.rootChildId,
+          this.root,
           headingMatch[0].length - 1,
           this.parent,
         ),
@@ -38,7 +48,13 @@ export class BlockNodeClass extends NodeClass {
     if (this.value.startsWith("- ")) {
       this.value = this.value.replace("- ", "");
       this.transformType(
-        new ListItemNodeClass(this.value, this.children, this.parent),
+        new ListItemNodeClass(
+          this.value,
+          this.children,
+          this.rootChildId,
+          this.root,
+          this.parent,
+        ),
       );
     }
   }

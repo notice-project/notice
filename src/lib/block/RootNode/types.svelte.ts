@@ -3,14 +3,18 @@ import { NodeClass } from "../Node/types.svelte";
 
 /* eslint-disable no-self-assign */
 export class RootNodeClass extends NodeClass {
-  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
-    super(value, children, parent);
+  constructor(value: string, children: NodeClass[]) {
+    super(value, children, "");
     this.registerAction("Enter", () => {
-      this.parent.appendChild(
-        new BlockNodeClass("", [], this.parent),
-        this.index + 1,
+      this.appendChild(
+        new BlockNodeClass("", [], "", this, this),
+        this.children.length,
       );
     });
+  }
+
+  notifyUpdate() {
+    // do nothing
   }
 
   appendChild(node: NodeClass, index: number) {

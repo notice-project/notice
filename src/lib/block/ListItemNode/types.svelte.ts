@@ -3,23 +3,37 @@ import { NodeClass } from "../Node/types.svelte";
 
 /* eslint-disable no-self-assign */
 export class ListItemNodeClass extends NodeClass {
-  constructor(value: string, children: NodeClass[], parent: NodeClass) {
-    super(value, children, parent);
+  constructor(
+    value: string,
+    children: NodeClass[],
+    rootChildId: string,
+    root: NodeClass,
+    parent: NodeClass,
+  ) {
+    super(value, children, rootChildId, root, parent);
     this.registerAction("Backspace", () => {
       if (this.value === "") {
-        this.transformType(new BlockNodeClass("", this.children, this.parent));
+        this.transformType(
+          new BlockNodeClass("", this.children, rootChildId, root, this.parent),
+        );
       }
     });
     this.registerAction("Enter", () => {
       if (this.children.length === 0) {
         this.parent.appendChild(
-          new ListItemNodeClass("", [], this.parent),
+          new ListItemNodeClass("", [], rootChildId, root, this.parent),
           this.index + 1,
         );
         return;
       }
 
-      const nextNode = new ListItemNodeClass("", [], this.parent);
+      const nextNode = new ListItemNodeClass(
+        "",
+        [],
+        rootChildId,
+        root,
+        this.parent,
+      );
       this.parent.appendChild(nextNode, this.index + 1);
       for (const child of this.children) {
         nextNode.appendChild(child, nextNode.children.length);
@@ -75,6 +89,10 @@ export class ListItemNodeClass extends NodeClass {
 
       this.children = [];
     });
+  }
+
+  notifyUpdate(): void {
+    // do nothing
   }
 
   appendChild(node: NodeClass, index: number) {

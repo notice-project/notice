@@ -8,18 +8,22 @@ export class HeadingNodeClass extends NodeClass {
   constructor(
     value: string,
     children: NodeClass[],
+    rootChildId: string,
+    root: NodeClass,
     level: number,
     parent?: NodeClass,
   ) {
-    super(value, children, parent);
+    super(value, children, rootChildId, root, parent);
     this.level = level;
     this.registerAction("Enter", () => {
       this.parent.appendChild(
-        new BlockNodeClass("", [], this.parent),
+        new BlockNodeClass("", [], rootChildId, root, this.parent),
         this.index + 1,
       );
     });
   }
+
+  notifyUpdate() {}
 
   appendChild(node: NodeClass, index: number): void {
     node.parent = this;
