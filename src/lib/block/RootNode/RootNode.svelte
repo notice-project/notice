@@ -12,7 +12,7 @@
 <div class="flex w-full justify-center">
   <div class="mx-10 flex w-full max-w-4xl flex-col">
     <div
-      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words border p-1 text-5xl"
+      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 pb-8 text-5xl"
       role="textbox"
       tabindex="0"
       contenteditable="true"

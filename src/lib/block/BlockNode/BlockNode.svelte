@@ -21,7 +21,7 @@
 </script>
 
 <div
-  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words border p-1"
+  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1"
   role="textbox"
   tabindex="0"
   contenteditable="true"

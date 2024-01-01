@@ -7,6 +7,4 @@
 
 <h1>This is test page</h1>
 
-<!-- <div class="flex flex-col pl-4"> -->
 <RootNode node={rootNode} />
-<!-- </div> -->
