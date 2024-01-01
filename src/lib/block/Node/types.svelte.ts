@@ -16,7 +16,7 @@ export abstract class NodeClass {
   id = crypto.randomUUID();
   _value = $state("");
   children = $state<NodeClass[]>([]);
-  inputRef = $state<HTMLInputElement | null>(null);
+  inputRef = $state<HTMLDivElement | null>(null);
   focusOnMount = $state(true);
 
   parent = $state<NodeClass>(this);
@@ -34,18 +34,18 @@ export abstract class NodeClass {
     ArrowUp: (e) => {
       e.preventDefault();
 
-      const cursorPos = this.inputRef?.selectionStart ?? 0;
+      // const cursorPos = this.inputRef?.selectionStart ?? 0;
 
       const node = this.prevNode();
-      node?.focusAt(cursorPos);
+      node?.focusAt(0);
     },
     ArrowDown: (e) => {
       e.preventDefault();
 
-      const cursorPos = this.inputRef?.selectionStart ?? 0;
+      // const cursorPos = this.inputRef?.selectionStart ?? 0;
 
       const nextNode = this.nextNode(true);
-      nextNode?.focusAt(cursorPos);
+      nextNode?.focusAt(0);
     },
   };
 
@@ -98,9 +98,9 @@ export abstract class NodeClass {
   }
 
   focusAt(cursorPos: number) {
-    const pos = Math.min(cursorPos, this.value.length);
+    // const pos = Math.min(cursorPos, this.value.length);
     this.inputRef?.focus();
-    this.inputRef?.setSelectionRange(pos, pos);
+    // this.inputRef?.setSelectionRange(pos, pos);
   }
 
   transformType(node: NodeClass) {

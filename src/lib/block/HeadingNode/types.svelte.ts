@@ -26,7 +26,9 @@ export class HeadingNodeClass extends NodeClass {
   }: HeadingNodeClassConstructor) {
     super({ value, children, rootChildId, root, parent });
     this.level = level;
-    this.registerAction("Enter", () => {
+    this.registerAction("Enter", (e) => {
+      e.preventDefault();
+
       this.parent.appendChild(
         new BlockNodeClass({
           value: "",

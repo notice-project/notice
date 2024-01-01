@@ -34,7 +34,9 @@ export class ListItemNodeClass extends NodeClass {
         );
       }
     });
-    this.registerAction("Enter", () => {
+    this.registerAction("Enter", (e) => {
+      e.preventDefault();
+
       if (this.children.length === 0) {
         this.parent.appendChild(
           new ListItemNodeClass({

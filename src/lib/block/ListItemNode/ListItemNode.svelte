@@ -17,12 +17,14 @@
 </script>
 
 <ul class="ml-6 list-disc">
-  <li>
-    <input
-      type="text"
-      class="border"
-      bind:value={node.value}
+  <li class="w-full">
+    <div
+      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words border p-1"
+      role="textbox"
+      tabindex="0"
+      contenteditable="true"
       bind:this={node.inputRef}
+      bind:textContent={node.value}
       onkeydown={(e) => node.keydownHandler(e)}
     />
     {#each node.children as childNode (childNode.id)}

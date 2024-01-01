@@ -22,7 +22,8 @@ export class BlockNodeClass extends NodeClass {
     parent,
   }: BlockNodeClassConstructor) {
     super({ value, children, rootChildId, root, parent });
-    this.registerAction("Enter", () => {
+    this.registerAction("Enter", (e) => {
+      e.preventDefault();
       this.parent.appendChild(
         new BlockNodeClass({
           value: "",

@@ -14,7 +14,8 @@ export class RootNodeClass extends NodeClass {
 
   constructor({ value, children }: RootNodeClassConstructor) {
     super({ value, children, rootChildId: "" });
-    this.registerAction("Enter", () => {
+    this.registerAction("Enter", (e) => {
+      e.preventDefault();
       this.appendChild(
         new BlockNodeClass({
           value: "",
