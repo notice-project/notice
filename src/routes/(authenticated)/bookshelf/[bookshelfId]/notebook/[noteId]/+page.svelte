@@ -45,18 +45,24 @@
 
   $effect(() => {
     const intervalId = setInterval(() => {
-      //   if (this.updateTitle) {
-      //   this.updateTitle = false;
-      // }
-
       if (rootNode == null) {
         return;
       }
 
+      if (rootNode.updateTitle) {
+        ws.send(
+          JSON.stringify({
+            type: "update title",
+            payload: rootNode.value,
+          }),
+        );
+        rootNode.updateTitle = false;
+
+        console.log("updated title!");
+      }
+
       if (rootNode.updateAll) {
         const payload = rootNode.dumpAll();
-
-        console.log(payload.children);
 
         ws.send(
           JSON.stringify({
