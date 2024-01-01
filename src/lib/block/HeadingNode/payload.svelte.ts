@@ -24,6 +24,7 @@ export class HeadingNodePayloadClass extends NodePayloadClass {
       type: this.type,
       level: this.level,
       children: this.children.map((child) => child.json()),
+      value: this.value,
     };
   }
 }

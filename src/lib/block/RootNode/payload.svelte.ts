@@ -12,6 +12,7 @@ export class RootNodePayloadClass extends NodePayloadClass {
       id: this.id,
       type: this.type,
       children: this.children.map((child) => child.json()),
+      value: this.value,
     };
   }
 }
