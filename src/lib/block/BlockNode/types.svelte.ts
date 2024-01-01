@@ -2,6 +2,7 @@ import { HeadingNodeClass } from "../HeadingNode/types.svelte";
 import { ListItemNodeClass } from "../ListItemNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
 import { RootNodeClass } from "../RootNode/types.svelte";
+import { BlockNodePayloadClass } from "./payload.svelte";
 
 type BlockNodeClassConstructor = {
   value: string;
@@ -43,12 +44,17 @@ export class BlockNodeClass extends NodeClass {
     this.root.appendNeedUpdateId(this.rootChildId);
   }
 
-  dump(): void {
-    console.log("BlockNode", this.value);
+  dump(): BlockNodePayloadClass {
+    const payload = new BlockNodePayloadClass({
+      id: this.id,
+      value: this.value,
+    });
 
     for (const child of this.children) {
-      child.dump();
+      payload.appendChild(child.dump());
     }
+
+    return payload;
   }
 
   appendChild(node: NodeClass, index: number) {

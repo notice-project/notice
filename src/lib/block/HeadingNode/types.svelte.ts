@@ -1,6 +1,7 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
 import { RootNodeClass } from "../RootNode/types.svelte";
+import { HeadingNodePayloadClass } from "./payload.svelte";
 
 type HeadingNodeClassConstructor = {
   value: string;
@@ -47,12 +48,18 @@ export class HeadingNodeClass extends NodeClass {
     this.root.appendNeedUpdateId(this.rootChildId);
   }
 
-  dump(): void {
-    console.log("HeadingNode", this.value);
+  dump(): HeadingNodePayloadClass {
+    const payload = new HeadingNodePayloadClass({
+      id: this.id,
+      value: this.value,
+      level: this.level,
+    });
 
     for (const child of this.children) {
-      child.dump();
+      payload.appendChild(child.dump());
     }
+
+    return payload;
   }
 
   appendChild(node: NodeClass, index: number): void {

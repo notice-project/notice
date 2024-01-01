@@ -1,5 +1,7 @@
 /* eslint-disable no-self-assign */
 
+import type { NodePayloadClass } from "./payload.svelte";
+
 type KeyAction = Record<string, (e: KeyboardEvent) => void>;
 
 type NodeClassConstructor = {
@@ -73,7 +75,7 @@ export abstract class NodeClass {
 
   abstract appendChild(node: NodeClass, index: number): void;
   abstract notifyUpdate(): void;
-  abstract dump(): void;
+  abstract dump(): NodePayloadClass;
 
   set value(value: string) {
     this._value = value;
