@@ -9,19 +9,15 @@
   let { node } = $props<RootNodeProps>();
 </script>
 
-<div class="flex w-full justify-center">
-  <div class="mx-10 flex w-full max-w-4xl flex-col">
-    <div
-      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 pb-8 text-5xl"
-      role="textbox"
-      tabindex="0"
-      contenteditable="true"
-      bind:this={node.inputRef}
-      bind:textContent={node.value}
-      onkeydown={(e) => node.keydownHandler(e)}
-    />
-    {#each node.children as childNode (childNode.id)}
-      <Node node={childNode} />
-    {/each}
-  </div>
-</div>
+<div
+  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 pb-8 text-5xl"
+  role="textbox"
+  tabindex="0"
+  contenteditable="true"
+  bind:this={node.inputRef}
+  bind:textContent={node.value}
+  onkeydown={(e) => node.keydownHandler(e)}
+/>
+{#each node.children as childNode (childNode.id)}
+  <Node node={childNode} />
+{/each}

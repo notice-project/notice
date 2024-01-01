@@ -20,18 +20,18 @@
   let rootNode = $state<RootNodeClass | null>(null);
   let isMicOn = $state(false);
 
-  let ws: WebSocket;
+  let noteWS: WebSocket;
   $effect(() => {
-    ws = new WebSocket(
+    noteWS = new WebSocket(
       `${env.PUBLIC_WS_URL}/bookshelves/${data.props.bookshelfId}/notes/${data.props.noteId}/ws`,
     );
-    ws.onopen = () => {
-      ws.send(
+    noteWS.onopen = () => {
+      noteWS.send(
         JSON.stringify({ type: "init", payload: data.props.sessionToken }),
       );
     };
 
-    ws.onmessage = (event) => {
+    noteWS.onmessage = (event) => {
       let message = JSON.parse(event.data) as NoteMessage;
       if (message.type === "note") {
         rootNode = RootNodeClass.load(message.payload);
@@ -39,7 +39,7 @@
     };
 
     return () => {
-      ws.close();
+      noteWS.close();
     };
   });
 
@@ -50,7 +50,7 @@
       }
 
       if (rootNode.updateTitle) {
-        ws.send(
+        noteWS.send(
           JSON.stringify({
             type: "update title",
             payload: rootNode.value,
@@ -64,7 +64,7 @@
       if (rootNode.updateAll) {
         const payload = rootNode.dumpAll();
 
-        ws.send(
+        noteWS.send(
           JSON.stringify({
             type: "update all",
             payload: payload.children,
@@ -84,7 +84,7 @@
           continue;
         }
 
-        ws.send(
+        noteWS.send(
           JSON.stringify({
             type: "update",
             payload: {
@@ -105,11 +105,31 @@
   });
 </script>
 
+<div class="flex w-full justify-center">
+  <div class="mx-10 flex w-full max-w-4xl flex-col">
+    {#if rootNode}
+      <RootNode node={rootNode} />
+    {:else}
+      <div class="text-2xl font-bold">Loading...</div>
+    {/if}
+  </div>
+</div>
+
 {#if rootNode}
-  <RootNode node={rootNode} />
-{:else}
-  <div class="flex h-full items-center justify-center">
-    <div class="text-2xl font-bold">Loading...</div>
+  <div class="flex w-full items-center justify-center">
+    <div class="mt-8 flex w-full max-w-4xl items-center justify-center">
+      <div class="ml-4 flex-grow border-t border-[#D9D9D9]" />
+      <Button.Root
+        variant="outline"
+        class=" w-full max-w-lg rounded-none border-[#D9D9D9] text-[#B0B0B0] hover:bg-[#D9D9D9] hover:text-white"
+        onclick={() => {
+          // noop
+        }}
+      >
+        Notice Me!
+      </Button.Root>
+      <div class="mr-4 flex-grow border-t border-[#D9D9D9]" />
+    </div>
   </div>
 {/if}
 
