@@ -1,29 +1,66 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
+import { RootNodeClass } from "../RootNode/types.svelte";
+
+type ListItemNodeClassConstructor = {
+  value: string;
+  children: NodeClass[];
+  rootChildId: string;
+  root: NodeClass;
+  parent: NodeClass;
+};
 
 /* eslint-disable no-self-assign */
 export class ListItemNodeClass extends NodeClass {
-  constructor(value: string, children: NodeClass[], parent: NodeClass) {
-    super(value, children, parent);
+  constructor({
+    value,
+    children,
+    rootChildId,
+    root,
+    parent,
+  }: ListItemNodeClassConstructor) {
+    super({ value, children, rootChildId, root, parent });
     this.registerAction("Backspace", () => {
       if (this.value === "") {
-        this.transformType(new BlockNodeClass("", this.children, this.parent));
+        this.transformType(
+          new BlockNodeClass({
+            value: "",
+            children: this.children,
+            rootChildId: this.rootChildId,
+            root: this.root,
+            parent: this.parent,
+          }),
+        );
       }
     });
     this.registerAction("Enter", () => {
       if (this.children.length === 0) {
         this.parent.appendChild(
-          new ListItemNodeClass("", [], this.parent),
+          new ListItemNodeClass({
+            value: "",
+            children: [],
+            rootChildId: this.rootChildId,
+            root: this.root,
+            parent: this.parent,
+          }),
           this.index + 1,
         );
         return;
       }
 
-      const nextNode = new ListItemNodeClass("", [], this.parent);
+      const nextNode = new ListItemNodeClass({
+        value: "",
+        children: [],
+        rootChildId: this.rootChildId,
+        root: this.root,
+        parent: this.parent,
+      });
       this.parent.appendChild(nextNode, this.index + 1);
+
       for (const child of this.children) {
         nextNode.appendChild(child, nextNode.children.length);
       }
+
       this.children = [];
     });
     this.registerAction("Tab", (e) => {
@@ -77,9 +114,28 @@ export class ListItemNodeClass extends NodeClass {
     });
   }
 
+  notifyUpdate() {
+    if (!(this.root instanceof RootNodeClass)) {
+      return;
+    }
+
+    this.root.appendNeedUpdateId(this.rootChildId);
+  }
+
+  dump(): void {
+    console.log("ListItemNode", this.value);
+
+    for (const child of this.children) {
+      child.dump();
+    }
+  }
+
   appendChild(node: NodeClass, index: number) {
     node.parent = this;
     this.children.splice(index, 0, node);
     this.children = this.children;
+
+    node.updateRootChildId(this.rootChildId);
+    this.notifyUpdate();
   }
 }

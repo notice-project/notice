@@ -2,15 +2,27 @@
 
 type KeyAction = Record<string, (e: KeyboardEvent) => void>;
 
+type NodeClassConstructor = {
+  value: string;
+  children: NodeClass[];
+  rootChildId: string;
+  root?: NodeClass;
+  parent?: NodeClass;
+};
+
 export abstract class NodeClass {
-  value = $state("");
+  id = crypto.randomUUID();
+  _value = $state("");
   children = $state<NodeClass[]>([]);
   inputRef = $state<HTMLInputElement | null>(null);
-  parent = $state<NodeClass>(this);
-  index = $derived(this.getIndex());
   focusOnMount = $state(true);
 
-  id = crypto.randomUUID();
+  parent = $state<NodeClass>(this);
+  root = $state<NodeClass>(this);
+
+  index = $derived(this.getIndex());
+  rootChildId = $state("");
+
   keyActions: KeyAction = {
     Backspace: () => {
       if (this.value === "" && this.index !== 0) {
@@ -35,17 +47,45 @@ export abstract class NodeClass {
     },
   };
 
-  constructor(value: string, children: NodeClass[], parent?: NodeClass) {
-    this.value = value;
+  constructor({
+    value,
+    children,
+    rootChildId,
+    root,
+    parent,
+  }: NodeClassConstructor) {
+    this._value = value;
     this.children = children;
+    if (this.parent.isRoot()) {
+      this.rootChildId = this.id;
+    } else {
+      this.rootChildId = rootChildId;
+    }
+
+    if (root) {
+      this.root = root;
+    }
+
     if (parent) {
       this.parent = parent;
     }
   }
 
   abstract appendChild(node: NodeClass, index: number): void;
+  abstract notifyUpdate(): void;
+  abstract dump(): void;
+
+  set value(value: string) {
+    this._value = value;
+    this.notifyUpdate();
+  }
+
+  get value() {
+    return this._value;
+  }
 
   removeChild(childId: string) {
+    this.notifyUpdate();
     const index = this.children.findIndex((child) => child.id === childId);
 
     if (index !== -1) {
@@ -67,9 +107,11 @@ export abstract class NodeClass {
     }
 
     this.parent.children[this.index] = node;
+    node.notifyUpdate();
   }
 
   keydownHandler(e: KeyboardEvent) {
+    // this.notifyUpdate();
     const action = this.keyActions[e.key];
 
     if (action) {
@@ -86,12 +128,12 @@ export abstract class NodeClass {
   }
 
   prevNode(): NodeClass | null {
-    if (this.index > 0) {
-      return this.parent.children[this.index - 1]!.deepestChild();
+    if (this.isRoot()) {
+      return null;
     }
 
-    if (this.parent.isRoot()) {
-      return null;
+    if (this.index > 0) {
+      return this.parent.children[this.index - 1]!.deepestChild();
     }
 
     return this.parent;
@@ -111,6 +153,15 @@ export abstract class NodeClass {
     }
 
     return this.parent.nextNode(false);
+  }
+
+  updateRootChildId(id: string) {
+    this.rootChildId = id;
+    for (const child of this.children) {
+      child.updateRootChildId(id);
+    }
+
+    this.notifyUpdate();
   }
 
   private getIndex() {
