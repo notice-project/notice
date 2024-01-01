@@ -20,11 +20,13 @@
   });
 </script>
 
-<input
-  type="text"
-  class="border"
+<div
+  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1"
+  role="textbox"
+  tabindex="0"
+  contenteditable="true"
+  bind:textContent={node.value}
   bind:this={node.inputRef}
-  bind:value={node.value}
   onkeydown={(e) => node.keydownHandler(e)}
 />
 <div class="ml-4">

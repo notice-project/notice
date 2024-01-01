@@ -31,10 +31,15 @@
   );
 </script>
 
-<input
-  type="text"
-  class={cn("border", textSizeStyle)}
-  bind:value={node.value}
+<div
+  class={cn(
+    "w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1",
+    textSizeStyle,
+  )}
+  role="textbox"
+  tabindex="0"
+  contenteditable="true"
   bind:this={node.inputRef}
+  bind:textContent={node.value}
   onkeydown={(e) => node.keydownHandler(e)}
 />
