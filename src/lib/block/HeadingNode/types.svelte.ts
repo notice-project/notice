@@ -50,6 +50,80 @@ export class HeadingNodeClass extends NodeClass {
     this.root.appendNeedUpdateId(this.rootChildId);
   }
 
+  shouldJumpToPrev() {
+    if (this.inputRef == null) {
+      return false;
+    }
+
+    const selection = window.getSelection();
+    if (!selection) {
+      return false;
+    }
+
+    const range = selection.getRangeAt(0);
+    const cursorRect = range.getBoundingClientRect();
+    const inputRect = this.inputRef.getBoundingClientRect();
+
+    switch (this.level) {
+      case 1:
+        if (cursorRect.bottom - inputRect.top <= 46) {
+          return true;
+        }
+        return false;
+      case 2:
+        if (cursorRect.bottom - inputRect.top <= 40) {
+          return true;
+        }
+        return false;
+      case 3:
+        if (cursorRect.bottom - inputRect.top <= 35) {
+          return true;
+        }
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  shouldJumpToNext() {
+    if (this.inputRef == null) {
+      return false;
+    }
+
+    if (this.value == "") {
+      return true;
+    }
+
+    const selection = window.getSelection();
+    if (!selection) {
+      return false;
+    }
+
+    const range = selection.getRangeAt(0);
+    const cursorRect = range.getBoundingClientRect();
+    const inputRect = this.inputRef.getBoundingClientRect();
+
+    switch (this.level) {
+      case 1:
+        if (inputRect.bottom - cursorRect.top <= 47) {
+          return true;
+        }
+        return false;
+      case 2:
+        if (inputRect.bottom - cursorRect.top <= 41) {
+          return true;
+        }
+        return false;
+      case 3:
+        if (inputRect.bottom - cursorRect.top <= 35) {
+          return true;
+        }
+        return false;
+      default:
+        return false;
+    }
+  }
+
   dump(): HeadingNodePayloadClass {
     const payload = new HeadingNodePayloadClass({
       id: this.id,

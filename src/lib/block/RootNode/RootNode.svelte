@@ -10,7 +10,7 @@
 </script>
 
 <div class="flex w-full justify-center">
-  <div class="mx-10 flex w-full max-w-xl flex-col">
+  <div class="mx-10 flex w-full max-w-4xl flex-col">
     <div
       class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words border p-1 text-5xl"
       role="textbox"

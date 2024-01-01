@@ -32,20 +32,30 @@ export abstract class NodeClass {
       }
     },
     ArrowUp: (e) => {
+      if (!this.shouldJumpToPrev()) {
+        return;
+      }
+
       e.preventDefault();
 
       // const cursorPos = this.inputRef?.selectionStart ?? 0;
+      const cursorPos = this.getCaretPosition();
 
       const node = this.prevNode();
-      node?.focusAt(0);
+      node?.focusAt(cursorPos);
     },
     ArrowDown: (e) => {
+      if (!this.shouldJumpToNext()) {
+        return;
+      }
+
       e.preventDefault();
 
       // const cursorPos = this.inputRef?.selectionStart ?? 0;
+      const cursorPos = this.getCaretPosition();
 
       const nextNode = this.nextNode(true);
-      nextNode?.focusAt(0);
+      nextNode?.focusAt(cursorPos);
     },
   };
 
@@ -74,6 +84,9 @@ export abstract class NodeClass {
   }
 
   abstract appendChild(node: NodeClass, index: number): void;
+  abstract shouldJumpToPrev(): boolean;
+  abstract shouldJumpToNext(): boolean;
+
   abstract notifyUpdate(): void;
   abstract dump(): NodePayloadClass;
 
@@ -98,9 +111,30 @@ export abstract class NodeClass {
   }
 
   focusAt(cursorPos: number) {
-    // const pos = Math.min(cursorPos, this.value.length);
-    this.inputRef?.focus();
-    // this.inputRef?.setSelectionRange(pos, pos);
+    if (this.inputRef == null) {
+      return;
+    }
+
+    if (this.inputRef.firstChild == null || this.inputRef.textContent == null) {
+      this.inputRef.focus();
+      return;
+    }
+
+    const selection = window.getSelection();
+
+    if (!selection) {
+      return;
+    }
+
+    const range = document.createRange();
+    range.setStart(
+      this.inputRef.firstChild!,
+      Math.min(cursorPos, this.inputRef.textContent!.length),
+    );
+    range.collapse(true);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   transformType(node: NodeClass) {
@@ -176,5 +210,62 @@ export abstract class NodeClass {
     }
 
     return this.children[this.children.length - 1]!.deepestChild();
+  }
+
+  private getCaretPosition() {
+    const selection = window.getSelection();
+
+    if (!selection || this.inputRef == null) {
+      return 0;
+    }
+
+    const range = selection.getRangeAt(0);
+    const clonedRange = range.cloneRange();
+    clonedRange.selectNodeContents(this.inputRef);
+    clonedRange.setEnd(range.endContainer, range.endOffset);
+
+    return clonedRange.toString().length;
+  }
+
+  private setCaretPosition(position: number) {
+    const range = this.createRange(position);
+
+    if (!range) {
+      return;
+    }
+
+    const selection = window.getSelection();
+    if (!selection) {
+      return;
+    }
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  private createRange(targetPosition: number) {
+    if (!this.inputRef) {
+      return;
+    }
+
+    const range = document.createRange();
+    range.selectNode(this.inputRef);
+    range.setStart(this.inputRef, 0);
+
+    const textContent = this.inputRef.textContent;
+
+    if (textContent == null) {
+      return;
+    }
+
+    if (textContent.length >= targetPosition) {
+      range.setEnd(this.inputRef, targetPosition);
+      return range;
+    }
+
+    // The target position is greater than the
+    // length of the contenteditable element.
+    range.setEnd(this.inputRef, textContent.length);
+    return range;
   }
 }
