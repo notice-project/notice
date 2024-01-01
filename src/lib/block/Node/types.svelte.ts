@@ -1,5 +1,6 @@
 /* eslint-disable no-self-assign */
 
+import type { RootNodeClass } from "../RootNode/types.svelte";
 import type { NodePayloadClass } from "./payload.svelte";
 
 type KeyAction = Record<string, (e: KeyboardEvent) => void>;
@@ -13,7 +14,7 @@ type NodeClassConstructor = {
 };
 
 export abstract class NodeClass {
-  id = crypto.randomUUID();
+  id: string = crypto.randomUUID();
   _value = $state("");
   children = $state<NodeClass[]>([]);
   inputRef = $state<HTMLDivElement | null>(null);
@@ -92,6 +93,11 @@ export abstract class NodeClass {
 
   set value(value: string) {
     this._value = value;
+    if (this.isRoot()) {
+      this.updateTitle = true;
+      return;
+    }
+
     this.notifyUpdate();
   }
 
@@ -159,7 +165,7 @@ export abstract class NodeClass {
     this.keyActions[key] = action;
   }
 
-  isRoot() {
+  isRoot(): this is RootNodeClass {
     return this.parent === this;
   }
 

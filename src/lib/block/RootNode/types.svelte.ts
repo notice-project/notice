@@ -1,6 +1,12 @@
+import type { BlockNodePayload } from "../BlockNode/payload.svelte";
 import { BlockNodeClass } from "../BlockNode/types.svelte";
+import type { HeadingNodePayload } from "../HeadingNode/payload.svelte";
+import { HeadingNodeClass } from "../HeadingNode/types.svelte";
+import type { ListItemNodePayload } from "../ListItemNode/payload.svelte";
+import { ListItemNodeClass } from "../ListItemNode/types.svelte";
+import type { NodePayload } from "../Node/payload.svelte";
 import { NodeClass } from "../Node/types.svelte";
-import { RootNodePayloadClass } from "./payload.svelte";
+import { RootNodePayloadClass, type RootNodePayload } from "./payload.svelte";
 
 type RootNodeClassConstructor = {
   value: string;
@@ -11,6 +17,7 @@ type RootNodeClassConstructor = {
 export class RootNodeClass extends NodeClass {
   needUpdateIds = $state<Set<string>>(new Set());
   updateTitle = $state(false);
+  updateAll = $state(false);
 
   constructor({ value, children }: RootNodeClassConstructor) {
     super({ value, children, rootChildId: "" });
@@ -27,20 +34,10 @@ export class RootNodeClass extends NodeClass {
         this.children.length,
       );
     });
-
-    $effect(() => {
-      const intervalId = setInterval(() => {
-        this.upload();
-      }, 10000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    });
   }
 
   notifyUpdate() {
-    this.updateTitle = true;
+    this.updateAll = true;
   }
 
   shouldJumpToPrev() {
@@ -87,9 +84,18 @@ export class RootNodeClass extends NodeClass {
     return payload;
   }
 
+  dumpAll() {
+    const payload = new RootNodePayloadClass();
+
+    for (const child of this.children) {
+      payload.appendChild(child.dump());
+    }
+
+    return payload;
+  }
+
   upload() {
     if (this.updateTitle) {
-      console.log(this.value);
       this.updateTitle = false;
     }
 
@@ -97,6 +103,47 @@ export class RootNodeClass extends NodeClass {
     console.log(payload.json());
 
     this.needUpdateIds.clear();
+  }
+
+  static load(payload: RootNodePayload): RootNodeClass {
+    const rootNode = new RootNodeClass({ value: payload.value, children: [] });
+    rootNode.id = payload.id;
+
+    const loadChildren = (currentNode: NodeClass, payload: NodePayload) => {
+      payload.children.forEach((child, idx) => {
+        switch (child.type) {
+          case "BlockNode":
+            currentNode.appendChild(
+              rootNode.loadBlockNode(currentNode, child),
+              idx,
+            );
+            break;
+          case "HeadingNode":
+            currentNode.appendChild(
+              rootNode.loadHeadingNode(
+                currentNode,
+                child as HeadingNodePayload,
+              ),
+              idx,
+            );
+            break;
+          case "ListItemNode":
+            currentNode.appendChild(
+              rootNode.loadListItemNode(currentNode, child),
+              idx,
+            );
+            break;
+          default:
+            throw new Error("Invalid node type");
+        }
+
+        loadChildren(currentNode.children[idx]!, child);
+      });
+
+      return currentNode;
+    };
+
+    return loadChildren(rootNode, payload) as RootNodeClass;
   }
 
   appendNeedUpdateId(id: string) {
@@ -110,5 +157,45 @@ export class RootNodeClass extends NodeClass {
     this.children = this.children;
 
     node.updateRootChildId(node.id);
+  }
+
+  private loadBlockNode(parent: NodeClass, payload: BlockNodePayload) {
+    const node = new BlockNodeClass({
+      value: payload.value,
+      children: [],
+      rootChildId: parent.parent.isRoot() ? parent.id : parent.rootChildId,
+      root: this,
+      parent: parent,
+    });
+    node.id = payload.id;
+
+    return node;
+  }
+
+  private loadHeadingNode(parent: NodeClass, payload: HeadingNodePayload) {
+    const node = new HeadingNodeClass({
+      value: payload.value,
+      children: [],
+      rootChildId: parent.parent.isRoot() ? parent.id : parent.rootChildId,
+      root: this,
+      parent: parent,
+      level: payload.level,
+    });
+    node.id = payload.id;
+
+    return node;
+  }
+
+  private loadListItemNode(parent: NodeClass, payload: ListItemNodePayload) {
+    const node = new ListItemNodeClass({
+      value: payload.value,
+      children: [],
+      rootChildId: parent.parent.isRoot() ? parent.id : parent.rootChildId,
+      root: this,
+      parent: parent,
+    });
+    node.id = payload.id;
+
+    return node;
   }
 }

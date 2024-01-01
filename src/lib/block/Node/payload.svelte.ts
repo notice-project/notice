@@ -13,6 +13,7 @@ type NodePayloadConstructor = {
 export interface NodePayload {
   id: string;
   type: NodeType;
+  value: string;
   children: NodePayload[];
 }
 

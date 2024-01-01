@@ -1,6 +1,5 @@
 import { BlockNodeClass } from "../BlockNode/types.svelte";
 import { NodeClass } from "../Node/types.svelte";
-import { RootNodeClass } from "../RootNode/types.svelte";
 import { ListItemNodePayloadClass } from "./payload.svelte";
 
 type ListItemNodeClassConstructor = {
@@ -164,7 +163,7 @@ export class ListItemNodeClass extends NodeClass {
   }
 
   notifyUpdate() {
-    if (!(this.root instanceof RootNodeClass)) {
+    if (!this.root.isRoot()) {
       return;
     }
 
