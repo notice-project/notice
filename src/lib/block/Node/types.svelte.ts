@@ -1,11 +1,39 @@
 /* eslint-disable no-self-assign */
+
+type KeyAction = Record<string, (e: KeyboardEvent) => void>;
+
 export abstract class NodeClass {
   value = $state("");
   children = $state<NodeClass[]>([]);
   inputRef = $state<HTMLInputElement | null>(null);
   parent = $state<NodeClass>(this);
   index = $derived(this.getIndex());
+  focusOnMount = $state(true);
+
   id = crypto.randomUUID();
+  keyActions: KeyAction = {
+    Backspace: () => {
+      if (this.value === "" && this.index !== 0) {
+        this.parent.removeChild(this.id);
+      }
+    },
+    ArrowUp: (e) => {
+      e.preventDefault();
+
+      const cursorPos = this.inputRef?.selectionStart ?? 0;
+
+      const node = this.prevNode();
+      node?.focusAt(cursorPos);
+    },
+    ArrowDown: (e) => {
+      e.preventDefault();
+
+      const cursorPos = this.inputRef?.selectionStart ?? 0;
+
+      const nextNode = this.nextNode(true);
+      nextNode?.focusAt(cursorPos);
+    },
+  };
 
   constructor(value: string, children: NodeClass[], parent?: NodeClass) {
     this.value = value;
@@ -15,7 +43,7 @@ export abstract class NodeClass {
     }
   }
 
-  abstract appendChild(value: string, index: number): void;
+  abstract appendChild(node: NodeClass, index: number): void;
 
   removeChild(childId: string) {
     const index = this.children.findIndex((child) => child.id === childId);
@@ -34,41 +62,66 @@ export abstract class NodeClass {
   }
 
   transformType(node: NodeClass) {
+    for (const child of this.children) {
+      child.parent = node;
+    }
+
     this.parent.children[this.index] = node;
   }
 
   keydownHandler(e: KeyboardEvent) {
-    const cursorPos = this.inputRef?.selectionStart ?? 0;
+    const action = this.keyActions[e.key];
 
-    switch (e.key) {
-      case "Enter":
-        this.parent.appendChild("", this.index + 1);
-        break;
-      case "Backspace":
-        if (this.value === "" && this.index !== 0) {
-          this.parent.removeChild(this.id);
-        }
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        if (this.index > 0) {
-          this.parent.children[this.index - 1]?.focusAt(cursorPos);
-        }
-        break;
-      case "ArrowDown":
-        e.preventDefault();
-        if (this.index < this.parent.children.length - 1) {
-          this.parent.children[this.index + 1]?.focusAt(cursorPos);
-        }
-        break;
+    if (action) {
+      action(e);
     }
   }
 
-  private getIndex() {
-    if (this.parent == null) {
-      return -1;
+  registerAction(key: string, action: (e: KeyboardEvent) => void) {
+    this.keyActions[key] = action;
+  }
+
+  isRoot() {
+    return this.parent === this;
+  }
+
+  prevNode(): NodeClass | null {
+    if (this.index > 0) {
+      return this.parent.children[this.index - 1]!.deepestChild();
     }
 
+    if (this.parent.isRoot()) {
+      return null;
+    }
+
+    return this.parent;
+  }
+
+  nextNode(containChild: boolean): NodeClass | null {
+    if (this.children.length > 0 && containChild) {
+      return this.children[0]!;
+    }
+
+    if (this.index < this.parent.children.length - 1) {
+      return this.parent.children[this.index + 1]!;
+    }
+
+    if (this.parent.isRoot()) {
+      return null;
+    }
+
+    return this.parent.nextNode(false);
+  }
+
+  private getIndex() {
     return this.parent.children.findIndex((child) => child.id === this.id);
+  }
+
+  private deepestChild(): NodeClass {
+    if (this.children.length === 0) {
+      return this;
+    }
+
+    return this.children[this.children.length - 1]!.deepestChild();
   }
 }
