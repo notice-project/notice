@@ -1,10 +1,14 @@
 <script lang="ts">
   import { api } from "$lib/api";
   import type { paths } from "$lib/api/schema";
-  import { AuthCookies } from "$lib/auth/cookies";
+  import * as Accordion from "$lib/components/ui/accordion";
   import * as Button from "$lib/components/ui/button";
   import * as Select from "$lib/components/ui/select";
-  import { createInfiniteQuery } from "@tanstack/svelte-query";
+  import {
+    createInfiniteQuery,
+    createMutation,
+    useQueryClient,
+  } from "@tanstack/svelte-query";
   import { ArrowDown, ArrowUp } from "lucide-svelte";
   import type { PageData } from "./$types";
   import Bookshelf from "./bookshelf.svelte";
@@ -27,16 +31,16 @@
     order = order === "asc" ? "desc" : "asc";
   };
 
-  let boolshelvesQuery = $derived(
+  let bookshelvesQuery = $derived(
     createInfiniteQuery({
       queryKey: [{ scope: "bookshelves", sort, order }],
       queryFn: async ({ pageParam: cursor }) => {
         const res = await api.GET("/bookshelves/", {
           params: {
-            cookie: {
-              [AuthCookies.sessionToken]: data.props.sessionToken,
-            },
             query: { cursor, sort, order },
+          },
+          headers: {
+            "X-Session-Token": data.props.sessionToken,
           },
         });
         if (res.error) throw res.error;
@@ -47,15 +51,33 @@
     }),
   );
 
-  let selectedBook = $state<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const click = (book: string | null) => {
-    selectedBook = book;
-  };
+  const createBookshelf = createMutation({
+    mutationFn: async (title: string) => {
+      const res = await api.POST("/bookshelves/", {
+        headers: {
+          "X-Session-Token": data.props.sessionToken,
+        },
+        body: { title },
+      });
+      if (res.error) throw res.error;
+      return res.data;
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: [{ scope: "bookshelves" }] });
+    },
+  });
 
+  let isAddingBookshelf = $state(false);
+  let newBookshelfTitle = $state("");
   const addBook = () => {
-    // const newBookTitle = prompt("Title of your new book:");
-    // if (newBookTitle) books = [...books, { title: newBookTitle, count: 0 }];
+    $createBookshelf.mutate(newBookshelfTitle, {
+      onSuccess: () => {
+        isAddingBookshelf = false;
+        newBookshelfTitle = "";
+      },
+    });
   };
 </script>
 
@@ -101,30 +123,58 @@
       </div>
     </div>
 
-    {#if $boolshelvesQuery.isError}
-      <div class="text-red-500">{$boolshelvesQuery.error.message}</div>
-    {:else if $boolshelvesQuery.isLoading}
+    {#if $bookshelvesQuery.isError}
+      <div class="text-red-500">{$bookshelvesQuery.error.message}</div>
+    {:else if $bookshelvesQuery.isLoading}
       <div class="text-neutral-500">Loading...</div>
     {:else}
-      <div class="flex h-full flex-col items-stretch overflow-y-clip">
-        {#each $boolshelvesQuery.data?.pages ?? [] as { data: bookshelves }}
+      <Accordion.Root
+        class="flex h-full flex-col items-stretch overflow-y-clip"
+      >
+        {#each $bookshelvesQuery.data?.pages ?? [] as { data: bookshelves }}
           {#each bookshelves as bookshelf (bookshelf.id)}
             <Bookshelf
-              onclick={() => click(bookshelf.id)}
-              selected={selectedBook === bookshelf.id}
+              id={bookshelf.id}
               title={bookshelf.title}
               count={bookshelf.count}
+              sessionToken={data.props.sessionToken}
             />
           {/each}
         {/each}
-      </div>
+      </Accordion.Root>
     {/if}
 
-    <button
-      onclick={addBook}
-      class="mt-7 flex items-center justify-center whitespace-nowrap border-[3px] border-dashed border-zinc-300 px-16 py-5 text-xl text-zinc-300 max-md:max-w-full max-md:px-5"
-    >
-      +
-    </button>
+    {#if isAddingBookshelf}
+      <form
+        onsubmit={(e) => {
+          e.preventDefault();
+          addBook();
+        }}
+        class="mt-7 flex w-full gap-2 border-[3px] border-dashed border-zinc-300 px-4 py-5 text-xl max-md:max-w-full max-md:px-5"
+      >
+        <input
+          type="text"
+          placeholder="Title of your new bookshelf"
+          bind:value={newBookshelfTitle}
+          class="flex-grow p-1 focus:outline-none"
+        />
+        <Button.Root variant="default">Add</Button.Root>
+        <Button.Root
+          variant="secondary"
+          onclick={() => (isAddingBookshelf = false)}
+        >
+          Cancel
+        </Button.Root>
+      </form>
+    {:else}
+      <button
+        onclick={() => {
+          isAddingBookshelf = true;
+        }}
+        class="mt-7 flex items-center justify-center whitespace-nowrap border-[3px] border-dashed border-zinc-300 px-5 py-6 text-xl text-zinc-300 max-md:max-w-full max-md:px-5"
+      >
+        +
+      </button>
+    {/if}
   </div>
 </div>

@@ -40,6 +40,13 @@ export type paths = {
     /** Update Note */
     patch: operations["update_note_bookshelves__bookshelf_id__notes__note_id__patch"];
   };
+  "/test": {
+    /**
+     * Test Note Page
+     * @description Test note page.
+     */
+    get: operations["test_note_page_test_get"];
+  };
   "/transcription": {
     /** Live Transcription Page */
     get: operations["live_transcription_page_transcription_get"];
@@ -97,6 +104,13 @@ export type components = {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** GetNotesResponse */
+    GetNotesResponse: {
+      /** Data */
+      data: components["schemas"]["NoteRead"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -107,6 +121,24 @@ export type components = {
      * @description Model for creating a note.
      */
     NoteCreate: {
+      /** Title */
+      title: string;
+    };
+    /**
+     * NoteRead
+     * @description Model for reading a note.
+     */
+    NoteRead: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
       /** Title */
       title: string;
     };
@@ -194,8 +226,8 @@ export type operations = {
         order?: "asc" | "desc";
         sort?: "title" | "created_at";
       };
-      cookie: {
-        "authjs.session-token": string;
+      header?: {
+        "x-session-token"?: string | null;
       };
     };
     responses: {
@@ -216,8 +248,8 @@ export type operations = {
   /** Create Bookshelf */
   create_bookshelf_bookshelves__post: {
     parameters: {
-      cookie: {
-        "authjs.session-token": string;
+      header?: {
+        "x-session-token"?: string | null;
       };
     };
     requestBody: {
@@ -243,11 +275,11 @@ export type operations = {
   /** Delete Bookshelf */
   delete_bookshelf_bookshelves__bookshelf_id__delete: {
     parameters: {
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     responses: {
@@ -266,11 +298,11 @@ export type operations = {
   /** Update Bookshelf */
   update_bookshelf_bookshelves__bookshelf_id__patch: {
     parameters: {
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     requestBody: {
@@ -302,18 +334,18 @@ export type operations = {
         order?: "asc" | "desc";
         sort?: "title" | "created_at";
       };
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["GetNotesResponse"];
         };
       };
       /** @description Validation Error */
@@ -327,11 +359,11 @@ export type operations = {
   /** Create Note */
   create_note_bookshelves__bookshelf_id__notes__post: {
     parameters: {
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     requestBody: {
@@ -357,12 +389,15 @@ export type operations = {
   /** Delete Note */
   delete_note_bookshelves__bookshelf_id__notes__note_id__delete: {
     parameters: {
+      query?: {
+        fetch_content?: boolean;
+      };
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
         note_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     responses: {
@@ -381,12 +416,15 @@ export type operations = {
   /** Update Note */
   update_note_bookshelves__bookshelf_id__notes__note_id__patch: {
     parameters: {
+      query?: {
+        fetch_content?: boolean;
+      };
+      header?: {
+        "x-session-token"?: string | null;
+      };
       path: {
         bookshelf_id: string;
         note_id: string;
-      };
-      cookie: {
-        "authjs.session-token": string;
       };
     };
     requestBody: {
@@ -405,6 +443,20 @@ export type operations = {
       422: {
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Test Note Page
+   * @description Test note page.
+   */
+  test_note_page_test_get: {
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
         };
       };
     };

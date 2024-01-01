@@ -4,5 +4,4 @@ import type { paths } from "./schema";
 
 export const api = createClient<paths>({
   baseUrl: env.PUBLIC_API_URL,
-  credentials: "include",
 });
