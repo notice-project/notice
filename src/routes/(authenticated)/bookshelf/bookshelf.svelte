@@ -99,7 +99,7 @@
         {#each page.data as note (note.id)}
           <a
             class="flex items-start justify-between gap-5 bg-zinc-100 px-7 py-6 text-lg font-semibold shadow-sm max-md:max-w-full max-md:flex-wrap max-md:px-5"
-            href="/bookshelf/{id}/notebook"
+            href="/bookshelf/{id}/notebook/{note.id}"
           >
             {note.title}
           </a>
