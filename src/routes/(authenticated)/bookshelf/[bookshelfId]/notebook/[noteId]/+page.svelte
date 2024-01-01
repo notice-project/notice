@@ -6,6 +6,7 @@
   import * as Button from "$lib/components/ui/button";
   import Mic from "$lib/icons/Mic.svelte";
   import Micoff from "$lib/icons/Micoff.svelte";
+  import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
   type NoteMessage = {
@@ -18,7 +19,6 @@
   }>();
 
   let rootNode = $state<RootNodeClass | null>(null);
-  let isMicOn = $state(false);
 
   let noteWS: WebSocket;
   $effect(() => {
@@ -103,6 +103,50 @@
       clearInterval(intervalId);
     };
   });
+
+  let isMicOn = $state(false);
+  let microphoneWS = $state<WebSocket | null>(null);
+
+  onMount(() => {
+    microphoneWS = new WebSocket(
+      `${env.PUBLIC_WS_URL}/bookshelves/${data.props.bookshelfId}/notes/${data.props.noteId}/transcription/ws`,
+    );
+
+    microphoneWS.onopen = () => {
+      console.log("microphoneWS opened!");
+      microphoneWS?.send(
+        JSON.stringify({ type: "init", payload: data.props.sessionToken }),
+      );
+    };
+
+    return () => {
+      microphoneWS?.close();
+    };
+  });
+
+  let mediaRecorder = $state<MediaRecorder | null>(null);
+  onMount(() => {
+    const genMediaRecorder = async () => {
+      const media = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(media);
+      mediaRecorder.ondataavailable = (e) => {
+        microphoneWS?.send(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        microphoneWS?.send(
+          JSON.stringify({
+            type: "stop",
+          }),
+        );
+      };
+    };
+
+    genMediaRecorder();
+
+    return () => {
+      mediaRecorder?.stop();
+    };
+  });
 </script>
 
 <div class="flex w-full justify-center">
@@ -138,6 +182,22 @@
   size="icon"
   class="absolute bottom-8 right-8 rounded-full"
   onclick={() => {
+    if (isMicOn) {
+      mediaRecorder?.stop();
+      microphoneWS?.send(
+        JSON.stringify({
+          type: "stop",
+        }),
+      );
+    } else {
+      mediaRecorder?.start(1000);
+      microphoneWS?.send(
+        JSON.stringify({
+          type: "start",
+        }),
+      );
+    }
+
     isMicOn = !isMicOn;
   }}
 >
