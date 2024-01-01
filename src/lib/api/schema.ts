@@ -104,6 +104,13 @@ export type components = {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** GetNotesResponse */
+    GetNotesResponse: {
+      /** Data */
+      data: components["schemas"]["NoteRead"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -114,6 +121,24 @@ export type components = {
      * @description Model for creating a note.
      */
     NoteCreate: {
+      /** Title */
+      title: string;
+    };
+    /**
+     * NoteRead
+     * @description Model for reading a note.
+     */
+    NoteRead: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
       /** Title */
       title: string;
     };
@@ -320,7 +345,7 @@ export type operations = {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["GetNotesResponse"];
         };
       };
       /** @description Validation Error */

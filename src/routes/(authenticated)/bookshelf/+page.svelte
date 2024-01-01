@@ -1,6 +1,7 @@
 <script lang="ts">
   import { api } from "$lib/api";
   import type { paths } from "$lib/api/schema";
+  import * as Accordion from "$lib/components/ui/accordion";
   import * as Button from "$lib/components/ui/button";
   import * as Select from "$lib/components/ui/select";
   import {
@@ -34,7 +35,6 @@
     createInfiniteQuery({
       queryKey: [{ scope: "bookshelves", sort, order }],
       queryFn: async ({ pageParam: cursor }) => {
-        console.log("sessionToken", data.props.sessionToken);
         const res = await api.GET("/bookshelves/", {
           params: {
             query: { cursor, sort, order },
@@ -68,12 +68,6 @@
       queryClient.invalidateQueries({ queryKey: [{ scope: "bookshelves" }] });
     },
   });
-
-  let selectedBook = $state<string | null>(null);
-
-  const click = (book: string | null) => {
-    selectedBook = book;
-  };
 
   let isAddingBookshelf = $state(false);
   let newBookshelfTitle = $state("");
@@ -134,18 +128,20 @@
     {:else if $bookshelvesQuery.isLoading}
       <div class="text-neutral-500">Loading...</div>
     {:else}
-      <div class="flex h-full flex-col items-stretch overflow-y-clip">
+      <Accordion.Root
+        class="flex h-full flex-col items-stretch overflow-y-clip"
+      >
         {#each $bookshelvesQuery.data?.pages ?? [] as { data: bookshelves }}
           {#each bookshelves as bookshelf (bookshelf.id)}
             <Bookshelf
-              onclick={() => click(bookshelf.id)}
-              selected={selectedBook === bookshelf.id}
+              id={bookshelf.id}
               title={bookshelf.title}
               count={bookshelf.count}
+              sessionToken={data.props.sessionToken}
             />
           {/each}
         {/each}
-      </div>
+      </Accordion.Root>
     {/if}
 
     {#if isAddingBookshelf}
