@@ -63,7 +63,8 @@ export class RootNodeClass extends NodeClass {
     const cursorRect = range.getBoundingClientRect();
     const inputRect = this.inputRef.getBoundingClientRect();
 
-    if (inputRect.bottom - cursorRect.top <= 57) {
+    console.log(inputRect.bottom - cursorRect.top);
+    if (inputRect.bottom - cursorRect.top <= 84) {
       return true;
     }
 

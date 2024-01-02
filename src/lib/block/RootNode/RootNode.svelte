@@ -10,7 +10,7 @@
 </script>
 
 <div
-  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 pb-8 text-5xl"
+  class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 py-8 text-5xl outline-none"
   role="textbox"
   tabindex="0"
   contenteditable="true"

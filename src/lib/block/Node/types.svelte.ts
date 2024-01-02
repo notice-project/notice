@@ -29,6 +29,9 @@ export abstract class NodeClass {
   keyActions: KeyAction = {
     Backspace: () => {
       if (this.value === "" && this.index !== 0) {
+        const node = this.prevNode();
+        node?.focusAt(node.value.length);
+
         this.parent.removeChild(this.id);
       }
     },
@@ -39,7 +42,6 @@ export abstract class NodeClass {
 
       e.preventDefault();
 
-      // const cursorPos = this.inputRef?.selectionStart ?? 0;
       const cursorPos = this.getCaretPosition();
 
       const node = this.prevNode();
@@ -52,7 +54,6 @@ export abstract class NodeClass {
 
       e.preventDefault();
 
-      // const cursorPos = this.inputRef?.selectionStart ?? 0;
       const cursorPos = this.getCaretPosition();
 
       const nextNode = this.nextNode(true);

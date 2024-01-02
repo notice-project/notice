@@ -19,7 +19,7 @@
 <ul class="ml-6 list-disc">
   <li class="w-full">
     <div
-      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1"
+      class="w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 outline-none"
       role="textbox"
       tabindex="0"
       contenteditable="true"

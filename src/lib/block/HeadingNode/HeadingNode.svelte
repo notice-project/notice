@@ -33,7 +33,7 @@
 
 <div
   class={cn(
-    "w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1",
+    "w-full flex-shrink-0 flex-grow whitespace-pre-wrap break-words p-1 outline-none",
     textSizeStyle,
   )}
   role="textbox"
