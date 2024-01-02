@@ -1,7 +1,6 @@
 <script lang="ts">
   import { env } from "$env/dynamic/public";
   import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
-  import GenNode from "$lib/block/GenNode/GenNode.svelte";
   import { GenNodeClass } from "$lib/block/GenNode/types.svelte";
   import RootNode from "$lib/block/RootNode/RootNode.svelte";
   import { type RootNodePayload } from "$lib/block/RootNode/payload.svelte";
@@ -9,12 +8,28 @@
   import * as Button from "$lib/components/ui/button";
   import Mic from "$lib/icons/Mic.svelte";
   import Micoff from "$lib/icons/Micoff.svelte";
+
+  import { insertMessageHandler, type InsertMessage } from "$lib/api/utils";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
+
+  type NoteWSMessage = NoteMessage | UpdateMessage;
 
   type NoteMessage = {
     type: "note";
     payload: RootNodePayload;
+  };
+
+  type UpdateMessage = {
+    type: "generated";
+    payload:
+      | {
+          finished: false;
+          content: InsertMessage;
+        }
+      | {
+          finished: true;
+        };
   };
 
   let { data } = $props<{
@@ -23,29 +38,42 @@
 
   let rootNode = $state<RootNodeClass | null>(null);
 
-  let noteWS: WebSocket;
+  let noteWS = $state<WebSocket | null>(null);
   let isGenerating = $state(false);
 
-  console.log(data.props);
-  $effect(() => {
+  onMount(() => {
     noteWS = new WebSocket(
       `${env.PUBLIC_WS_URL}/bookshelves/${data.props.bookshelfId}/notes/${data.props.noteId}/ws`,
     );
     noteWS.onopen = () => {
-      noteWS.send(
+      noteWS?.send(
         JSON.stringify({ type: "init", payload: data.props.sessionToken }),
       );
     };
 
     noteWS.onmessage = (event) => {
-      let message = JSON.parse(event.data) as NoteMessage;
-      if (message.type === "note") {
-        rootNode = RootNodeClass.load(message.payload);
+      let message = JSON.parse(event.data) as NoteWSMessage;
+
+      switch (message.type) {
+        case "note":
+          rootNode = RootNodeClass.load(message.payload);
+          break;
+        case "generated":
+          if (rootNode == null) {
+            return;
+          }
+
+          if (message.payload.finished) {
+            isGenerating = false;
+            break;
+          }
+
+          insertMessageHandler(message.payload.content, rootNode);
       }
     };
 
     return () => {
-      noteWS.close();
+      noteWS?.close();
     };
   });
 
@@ -56,7 +84,7 @@
       }
 
       if (rootNode.updateTitle) {
-        noteWS.send(
+        noteWS?.send(
           JSON.stringify({
             type: "update title",
             payload: rootNode.value,
@@ -70,7 +98,7 @@
       if (rootNode.updateAll) {
         const payload = rootNode.dumpAll();
 
-        noteWS.send(
+        noteWS?.send(
           JSON.stringify({
             type: "update all",
             payload: payload.children,
@@ -90,7 +118,7 @@
           continue;
         }
 
-        noteWS.send(
+        noteWS?.send(
           JSON.stringify({
             type: "update",
             payload: {
@@ -103,7 +131,7 @@
       console.log("updated!");
 
       rootNode.needUpdateIds.clear();
-    }, 1000);
+    }, 3000);
 
     return () => {
       clearInterval(intervalId);
@@ -174,19 +202,30 @@
           variant="outline"
           class=" w-full max-w-lg rounded-none border-[#D9D9D9] text-[#B0B0B0] hover:bg-[#D9D9D9] hover:text-white"
           onclick={() => {
-          isGenerating = true;
-          const genNode = new GenNodeClass();
-          rootNode?.serverAppendChild(genNode, rootNode.children.length);
+            if (rootNode == null) {
+              return;
+            }
 
-          const nextNode = new BlockNodeClass({
-            value: "",
-            children: [],
-            rootChildId: "",
-            root: rootNode!,
-            parent: rootNode!,
-          })
-          rootNode?.appendChild(nextNode, rootNode.children.length);
-        }}
+            noteWS?.send(
+              JSON.stringify({
+                type: "notice me",
+                payload: rootNode.children.length,
+              }),
+            );
+
+            isGenerating = true;
+            const genNode = new GenNodeClass();
+            rootNode.serverAppendChild(genNode, rootNode.children.length);
+
+            const nextNode = new BlockNodeClass({
+              value: "",
+              children: [],
+              rootChildId: "",
+              root: rootNode,
+              parent: rootNode,
+            });
+            rootNode.appendChild(nextNode, rootNode.children.length);
+          }}
         >
           Notice Me!
         </Button.Root>
@@ -195,8 +234,6 @@
     </div>
   </div>
 {/if}
-
-<GenNode />
 
 <Button.Root
   variant="outline"
