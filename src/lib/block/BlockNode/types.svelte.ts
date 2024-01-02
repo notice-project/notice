@@ -112,6 +112,14 @@ export class BlockNodeClass extends NodeClass {
     this.notifyUpdate();
   }
 
+  serverAppendChild(node: NodeClass, index: number) {
+    node.parent = this;
+    this.children.splice(index, 0, node);
+    this.children = this.children;
+
+    node.updateRootChildId(this.rootChildId);
+  }
+
   inputListener() {
     const headingMatch = this.value.match(/^#{1,3}\s/);
 

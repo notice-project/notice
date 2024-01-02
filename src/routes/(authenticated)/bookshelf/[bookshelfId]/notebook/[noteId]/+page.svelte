@@ -1,5 +1,8 @@
 <script lang="ts">
   import { env } from "$env/dynamic/public";
+  import { BlockNodeClass } from "$lib/block/BlockNode/types.svelte";
+  import GenNode from "$lib/block/GenNode/GenNode.svelte";
+  import { GenNodeClass } from "$lib/block/GenNode/types.svelte";
   import RootNode from "$lib/block/RootNode/RootNode.svelte";
   import { type RootNodePayload } from "$lib/block/RootNode/payload.svelte";
   import { RootNodeClass } from "$lib/block/RootNode/types.svelte";
@@ -21,6 +24,9 @@
   let rootNode = $state<RootNodeClass | null>(null);
 
   let noteWS: WebSocket;
+  let isGenerating = $state(false);
+
+  console.log(data.props);
   $effect(() => {
     noteWS = new WebSocket(
       `${env.PUBLIC_WS_URL}/bookshelves/${data.props.bookshelfId}/notes/${data.props.noteId}/ws`,
@@ -163,19 +169,34 @@
   <div class="flex w-full items-center justify-center">
     <div class="mt-8 flex w-full max-w-4xl items-center justify-center">
       <div class="ml-4 flex-grow border-t border-[#D9D9D9]" />
-      <Button.Root
-        variant="outline"
-        class=" w-full max-w-lg rounded-none border-[#D9D9D9] text-[#B0B0B0] hover:bg-[#D9D9D9] hover:text-white"
-        onclick={() => {
-          // noop
+      {#if !isGenerating}
+        <Button.Root
+          variant="outline"
+          class=" w-full max-w-lg rounded-none border-[#D9D9D9] text-[#B0B0B0] hover:bg-[#D9D9D9] hover:text-white"
+          onclick={() => {
+          isGenerating = true;
+          const genNode = new GenNodeClass();
+          rootNode?.serverAppendChild(genNode, rootNode.children.length);
+
+          const nextNode = new BlockNodeClass({
+            value: "",
+            children: [],
+            rootChildId: "",
+            root: rootNode!,
+            parent: rootNode!,
+          })
+          rootNode?.appendChild(nextNode, rootNode.children.length);
         }}
-      >
-        Notice Me!
-      </Button.Root>
+        >
+          Notice Me!
+        </Button.Root>
+      {/if}
       <div class="mr-4 flex-grow border-t border-[#D9D9D9]" />
     </div>
   </div>
 {/if}
+
+<GenNode />
 
 <Button.Root
   variant="outline"

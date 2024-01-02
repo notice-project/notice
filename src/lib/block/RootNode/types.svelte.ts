@@ -159,6 +159,14 @@ export class RootNodeClass extends NodeClass {
     node.updateRootChildId(node.id);
   }
 
+  serverAppendChild(node: NodeClass, index: number) {
+    node.parent = this;
+    this.children.splice(index, 0, node);
+    this.children = this.children;
+
+    node.updateRootChildId(node.id);
+  }
+
   private loadBlockNode(parent: NodeClass, payload: BlockNodePayload) {
     const node = new BlockNodeClass({
       value: payload.value,

@@ -2,7 +2,8 @@ export type NodeType =
   | "BlockNode"
   | "HeadingNode"
   | "ListItemNode"
-  | "RootNode";
+  | "RootNode"
+  | "GenNode";
 
 type NodePayloadConstructor = {
   id: string;

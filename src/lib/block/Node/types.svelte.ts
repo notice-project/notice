@@ -85,6 +85,7 @@ export abstract class NodeClass {
   }
 
   abstract appendChild(node: NodeClass, index: number): void;
+  abstract serverAppendChild(node: NodeClass, index: number): void;
   abstract shouldJumpToPrev(): boolean;
   abstract shouldJumpToNext(): boolean;
 
@@ -231,47 +232,5 @@ export abstract class NodeClass {
     clonedRange.setEnd(range.endContainer, range.endOffset);
 
     return clonedRange.toString().length;
-  }
-
-  private setCaretPosition(position: number) {
-    const range = this.createRange(position);
-
-    if (!range) {
-      return;
-    }
-
-    const selection = window.getSelection();
-    if (!selection) {
-      return;
-    }
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  private createRange(targetPosition: number) {
-    if (!this.inputRef) {
-      return;
-    }
-
-    const range = document.createRange();
-    range.selectNode(this.inputRef);
-    range.setStart(this.inputRef, 0);
-
-    const textContent = this.inputRef.textContent;
-
-    if (textContent == null) {
-      return;
-    }
-
-    if (textContent.length >= targetPosition) {
-      range.setEnd(this.inputRef, targetPosition);
-      return range;
-    }
-
-    // The target position is greater than the
-    // length of the contenteditable element.
-    range.setEnd(this.inputRef, textContent.length);
-    return range;
   }
 }
