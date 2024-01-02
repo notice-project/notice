@@ -57,6 +57,21 @@ const config = {
       fontFamily: {
         sans: [...fontFamily.sans],
       },
+      animation: {
+        swing: "swing 1s infinite",
+      },
+      keyframes: {
+        swing: {
+          "0%, 100%": {
+            transform: "translateX(25%)",
+            "animation-timing-function": "cubic-bezier(0.8, 0, 1, 1)",
+          },
+          "50%": {
+            transform: "translateX(0)",
+            "animation-timing-function": "cubic-bezier(0, 0, 0.2, 1)",
+          },
+        },
+      },
     },
   },
 };

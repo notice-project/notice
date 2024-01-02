@@ -1,6 +1,5 @@
 import type { BlockNodePayload } from "../BlockNode/payload.svelte";
 import { BlockNodeClass } from "../BlockNode/types.svelte";
-import { GenNodeClass } from "../GenNode/types.svelte";
 import type { HeadingNodePayload } from "../HeadingNode/payload.svelte";
 import { HeadingNodeClass } from "../HeadingNode/types.svelte";
 import type { ListItemNodePayload } from "../ListItemNode/payload.svelte";
@@ -63,7 +62,6 @@ export class RootNodeClass extends NodeClass {
     const cursorRect = range.getBoundingClientRect();
     const inputRect = this.inputRef.getBoundingClientRect();
 
-    console.log(inputRect.bottom - cursorRect.top);
     if (inputRect.bottom - cursorRect.top <= 84) {
       return true;
     }
@@ -164,13 +162,7 @@ export class RootNodeClass extends NodeClass {
   serverAppendChild(node: NodeClass, index: number) {
     node.parent = this;
 
-    const originNode = this.children[index];
-    if (originNode instanceof GenNodeClass) {
-      console.log("serverAppendChild: replace");
-      this.children[index] = node;
-    } else {
-      this.children.splice(index, 0, node);
-    }
+    this.children.splice(index, 0, node);
     this.children = this.children;
 
     node.updateRootChildId(node.id);

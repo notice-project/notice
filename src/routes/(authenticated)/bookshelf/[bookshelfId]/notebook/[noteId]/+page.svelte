@@ -10,6 +10,7 @@
   import Micoff from "$lib/icons/Micoff.svelte";
 
   import { insertMessageHandler, type InsertMessage } from "$lib/api/utils";
+  import GenNode from "$lib/block/GenNode/GenNode.svelte";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
@@ -65,6 +66,11 @@
 
           if (message.payload.finished) {
             isGenerating = false;
+            for (const child of rootNode.children) {
+              if (child instanceof GenNodeClass) {
+                rootNode.removeChild(child.id);
+              }
+            }
             break;
           }
 
@@ -265,3 +271,5 @@
     <Micoff />
   {/if}
 </Button.Root>
+
+<GenNode />
