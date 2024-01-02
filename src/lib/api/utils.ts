@@ -38,6 +38,7 @@ export const insertMessageHandler = async (
         rootChildId: currentNode.isRoot() ? item.id : currentNode.rootChildId,
       });
       blockNode.id = item.id;
+      blockNode.focusOnMount = false;
 
       currentNode.serverAppendChild(blockNode, index);
       break;
@@ -52,6 +53,7 @@ export const insertMessageHandler = async (
         level: (item as HeadingNodePayload).level,
       });
       headingNode.id = item.id;
+      headingNode.focusOnMount = false;
 
       currentNode.serverAppendChild(headingNode, index);
       break;
@@ -65,6 +67,7 @@ export const insertMessageHandler = async (
         rootChildId: currentNode.isRoot() ? item.id : currentNode.rootChildId,
       });
       itemNode.id = item.id;
+      itemNode.focusOnMount = false;
 
       currentNode.serverAppendChild(itemNode, index);
       break;

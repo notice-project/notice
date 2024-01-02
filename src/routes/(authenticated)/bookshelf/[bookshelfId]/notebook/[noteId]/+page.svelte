@@ -238,7 +238,7 @@
 <Button.Root
   variant="outline"
   size="icon"
-  class="absolute bottom-8 right-8 rounded-full"
+  class="fixed bottom-8 right-8 rounded-full"
   onclick={() => {
     if (isMicOn) {
       mediaRecorder?.stop();

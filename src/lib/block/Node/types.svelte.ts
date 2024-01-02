@@ -28,8 +28,9 @@ export abstract class NodeClass {
 
   keyActions: KeyAction = {
     Backspace: () => {
-      if (this.value === "" && this.index !== 0) {
+      if (this.value === "" && !this.isRoot()) {
         const node = this.prevNode();
+        console.log(node?.value);
         node?.focusAt(node.value.length);
 
         this.parent.removeChild(this.id);
