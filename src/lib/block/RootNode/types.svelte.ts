@@ -62,7 +62,7 @@ export class RootNodeClass extends NodeClass {
     const cursorRect = range.getBoundingClientRect();
     const inputRect = this.inputRef.getBoundingClientRect();
 
-    if (inputRect.bottom - cursorRect.top <= 57) {
+    if (inputRect.bottom - cursorRect.top <= 84) {
       return true;
     }
 
@@ -153,6 +153,15 @@ export class RootNodeClass extends NodeClass {
 
   appendChild(node: NodeClass, index: number) {
     node.parent = this;
+    this.children.splice(index, 0, node);
+    this.children = this.children;
+
+    node.updateRootChildId(node.id);
+  }
+
+  serverAppendChild(node: NodeClass, index: number) {
+    node.parent = this;
+
     this.children.splice(index, 0, node);
     this.children = this.children;
 

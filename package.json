@@ -52,6 +52,7 @@
     "mysql2": "^3.6.5",
     "openapi-fetch": "^0.8.2",
     "tailwind-merge": "^2.2.0",
-    "tailwind-variants": "^0.1.19"
+    "tailwind-variants": "^0.1.19",
+    "typed.js": "^2.1.0"
   }
 }

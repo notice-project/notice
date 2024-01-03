@@ -145,4 +145,12 @@ export class HeadingNodeClass extends NodeClass {
     node.updateRootChildId(this.rootChildId);
     this.notifyUpdate();
   }
+
+  serverAppendChild(node: NodeClass, index: number): void {
+    node.parent = this;
+    this.children.splice(index, 0, node);
+    this.children = this.children;
+
+    node.updateRootChildId(this.rootChildId);
+  }
 }

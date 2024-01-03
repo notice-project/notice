@@ -1,6 +1,8 @@
 <script lang="ts">
   import BlockNode from "../BlockNode/BlockNode.svelte";
   import { BlockNodeClass } from "../BlockNode/types.svelte";
+  import GenNode from "../GenNode/GenNode.svelte";
+  import { GenNodeClass } from "../GenNode/types.svelte";
   import HeadingNode from "../HeadingNode/HeadingNode.svelte";
   import { HeadingNodeClass } from "../HeadingNode/types.svelte";
   import ListItemNode from "../ListItemNode/ListItemNode.svelte";
@@ -19,4 +21,6 @@
   <HeadingNode {node} />
 {:else if node instanceof ListItemNodeClass}
   <ListItemNode {node} />
+{:else if node instanceof GenNodeClass}
+  <GenNode />
 {/if}
