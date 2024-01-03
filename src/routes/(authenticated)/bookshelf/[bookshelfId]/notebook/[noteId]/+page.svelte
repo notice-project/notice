@@ -10,7 +10,6 @@
   import Micoff from "$lib/icons/Micoff.svelte";
 
   import { insertMessageHandler, type InsertMessage } from "$lib/api/utils";
-  import GenNode from "$lib/block/GenNode/GenNode.svelte";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
@@ -189,15 +188,19 @@
   });
 </script>
 
-<div class="flex w-full justify-center">
-  <div class="mx-10 flex w-full max-w-4xl flex-col">
-    {#if rootNode}
+{#if rootNode}
+  <div class="flex w-full justify-center">
+    <div class="mx-10 flex w-full max-w-4xl flex-col">
       <RootNode node={rootNode} />
-    {:else}
-      <div class="text-2xl font-bold">Loading...</div>
-    {/if}
+    </div>
   </div>
-</div>
+{:else}
+  <div
+    class="flex h-full w-full flex-grow flex-col items-center justify-center"
+  >
+    <div class="text-2xl font-bold">Loading...</div>
+  </div>
+{/if}
 
 {#if rootNode}
   <div class="flex w-full items-center justify-center">
@@ -271,5 +274,3 @@
     <Micoff />
   {/if}
 </Button.Root>
-
-<GenNode />

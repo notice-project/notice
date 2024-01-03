@@ -26,5 +26,4 @@
   >
     <span id="typing"></span>
   </div>
-  <!-- <Skeleton class="m-1 h-8 w-full max-w-2xl rounded-full" /> -->
 </div>
