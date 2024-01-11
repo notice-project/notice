@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^9.0.0
     version: 9.1.0(eslint@8.55.0)
   eslint-plugin-svelte:
-    specifier: 2.36.0-next.3
-    version: 2.36.0-next.3(eslint@8.55.0)(svelte@5.0.0-next.22)
+    specifier: 2.36.0-next.4
+    version: 2.36.0-next.4(eslint@8.55.0)(svelte@5.0.0-next.22)
   openapi-typescript:
     specifier: ^6.7.3
     version: 6.7.3
@@ -4288,12 +4288,12 @@ packages:
       eslint: 8.55.0
     dev: true
 
-  /eslint-plugin-svelte@2.36.0-next.3(eslint@8.55.0)(svelte@5.0.0-next.22):
-    resolution: {integrity: sha512-YSgJ6nNI4fDeYEnZNAbPPJmUYaCt3pOrMFIiyqODRJnAq7lO0uhVlhizLKBTGdupZMeh3FGjlQUT61RmvTWL7A==}
+  /eslint-plugin-svelte@2.36.0-next.4(eslint@8.55.0)(svelte@5.0.0-next.22):
+    resolution: {integrity: sha512-+gy73k0IlYFbesN3p5UJtwYJpE1/3zGTxzkRT+CtOPT6ka00y9zlGXh7sYSYJ6nHQkvGUkSE49q5ve0Y5UVONg==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0-0
-      svelte: ^3.37.0 || ^4.0.0 || ^5.0.0-next.16
+      svelte: ^3.37.0 || ^4.0.0 || ^5.0.0-next.33
     peerDependenciesMeta:
       svelte:
         optional: true
